@@ -7,15 +7,23 @@ public class Product {
     private double price;
 
     public Product(int id, String name, String description, double price) {
+        validateName(name);
+        validatePrice(price);
+
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
+
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         validateName(name);
         this.name = name;
@@ -26,7 +34,7 @@ public class Product {
         this.price = price;
     }
 
-    public double getPrice(){
+    public double getPrice() {
         return price;
     }
 
@@ -34,8 +42,8 @@ public class Product {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Product name cant be empty");
         }
-        if (name.length() > 100) {
-            throw new IllegalArgumentException("Product name cant be longer than 100 chars");
+        if (name.length() > 30) {
+            throw new IllegalArgumentException("Product name cant be longer than 30 chars");
         }
     }
 
