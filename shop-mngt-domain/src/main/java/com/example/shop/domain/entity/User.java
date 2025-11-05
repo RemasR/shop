@@ -65,7 +65,7 @@ public class User {
 
     private void validatePhoneNumber(String phoneNumber) {
         if (phoneNumber == null) throw new IllegalArgumentException("Phone number is null");
-        String phoneRegex = "^\\+9627[7-9]\\d{6}$";
+        String phoneRegex = "^\\+9627[7-9]\\d{7}$";
         if (!phoneNumber.matches(phoneRegex)) throw new IllegalArgumentException("Invalid phone number");
     }
 }
