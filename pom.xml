@@ -16,8 +16,6 @@
     <modules>
         <module>shop-mngt-domain</module>
         <module>shop-mngt-application</module>
-        <module>shop-mngt-infra</module>
-        <module>shop-mngt-presentation</module>
     </modules>
 
     <properties>
@@ -33,6 +31,12 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>5.4.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
