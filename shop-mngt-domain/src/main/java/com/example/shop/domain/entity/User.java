@@ -9,7 +9,7 @@ public class User {
     private String email;
     private String phoneNumber;
 
-    public User(UUID id, String name, String email, String phoneNumber, Order order) {
+    public User(UUID id, String name, String email, String phoneNumber) {
         validateName(name);
         validateEmail(email);
         validatePhoneNumber(phoneNumber);
