@@ -13,6 +13,9 @@ public class Product {
         this.price = price;
     }
 
+    public int getId(){
+        return id;
+    }
     public void setName(String name) {
         validateName(name);
         this.name = name;
