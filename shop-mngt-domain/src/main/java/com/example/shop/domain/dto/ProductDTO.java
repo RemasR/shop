@@ -1,5 +1,8 @@
 package com.example.shop.domain.dto;
 
+import lombok.Data;
+
+@Data
 public class ProductDTO {
     private String name;
     private String description;
@@ -10,30 +13,4 @@ public class ProductDTO {
         this.description = description;
         this.price = price;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-
 }
