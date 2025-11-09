@@ -1,5 +1,7 @@
+// test/UpdateUserUsecaseTest.java
 package com.example.user;
 
+import com.example.shop.domain.dto.UpdateUserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.user.UpdateUserUsecase;
@@ -30,7 +32,8 @@ public class UpdateUserUsecaseTest {
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result = updateUserUsecase.execute(userId, "NewName", null, null);
+        UpdateUserDTO dto = new UpdateUserDTO("NewName", null, null);
+        User result = updateUserUsecase.execute(userId, dto);
 
         assertEquals("NewName", result.getName());
         assertEquals("email@test.com", result.getEmail());
@@ -49,7 +52,8 @@ public class UpdateUserUsecaseTest {
         when(userRepository.findByEmail("new@test.com")).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result = updateUserUsecase.execute(userId, null, "new@test.com", null);
+        UpdateUserDTO dto = new UpdateUserDTO(null, "new@test.com", null);
+        User result = updateUserUsecase.execute(userId, dto);
 
         assertEquals("Khalid", result.getName());
         assertEquals("new@test.com", result.getEmail());
@@ -68,10 +72,11 @@ public class UpdateUserUsecaseTest {
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result = updateUserUsecase.execute(userId, null, null, "+962792222222");
+        UpdateUserDTO dto = new UpdateUserDTO(null, null, "+962792222222");
+        User result = updateUserUsecase.execute(userId, dto);
 
-        assertEquals("Khalid", result.getName()); // Unchanged
-        assertEquals("email@test.com", result.getEmail()); // Unchanged
+        assertEquals("Khalid", result.getName());
+        assertEquals("email@test.com", result.getEmail());
         assertEquals("+962792222222", result.getPhoneNumber());
 
         verify(userRepository, times(1)).findById(userId);
@@ -84,9 +89,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(null);
 
+        UpdateUserDTO dto = new UpdateUserDTO("NewName", null, null);
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, "NewName", null, null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, times(1)).findById(userId);
@@ -104,13 +111,16 @@ public class UpdateUserUsecaseTest {
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.findByEmail("taken@test.com")).thenReturn(otherUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, "taken@test.com", null);
+
         assertThrows(
                 IllegalStateException.class,
-                () -> updateUserUsecase.execute(userId, null, "taken@test.com", null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
     }
+
     @Test
     void givenInvalidName_whenUpdate_thenThrowsException() {
         UUID userId = UUID.randomUUID();
@@ -118,9 +128,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO("Ab", null, null);
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, "Ab", null, null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -133,9 +145,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO("   ", null, null);
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, "   ", null, null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -148,9 +162,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, "not-an-email", null);
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, null, "not-an-email", null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -163,9 +179,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, "   ", null);
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, null, "   ", null)
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -178,9 +196,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, null, "123456");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, null, null, "123456")
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -193,9 +213,11 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, null, "   ");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, null, null, "   ")
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
@@ -208,13 +230,16 @@ public class UpdateUserUsecaseTest {
 
         when(userRepository.findById(userId)).thenReturn(existingUser);
 
+        UpdateUserDTO dto = new UpdateUserDTO(null, null, "+962691234567");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, null, null, "+962691234567")
+                () -> updateUserUsecase.execute(userId, dto)
         );
 
         verify(userRepository, never()).save(any());
     }
+
     @Test
     void givenMultipleUpdates_whenUpdateSameUser_thenAllUpdatesApplied() {
         UUID userId = UUID.randomUUID();
@@ -224,11 +249,14 @@ public class UpdateUserUsecaseTest {
         when(userRepository.findByEmail(anyString())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result1 = updateUserUsecase.execute(userId, "Updated1", null, null);
+        UpdateUserDTO dto1 = new UpdateUserDTO("Updated1", null, null);
+        User result1 = updateUserUsecase.execute(userId, dto1);
 
-        User result2 = updateUserUsecase.execute(userId, null, "updated@test.com", null);
+        UpdateUserDTO dto2 = new UpdateUserDTO(null, "updated@test.com", null);
+        User result2 = updateUserUsecase.execute(userId, dto2);
 
-        User result3 = updateUserUsecase.execute(userId, null, null, "+962792222222");
+        UpdateUserDTO dto3 = new UpdateUserDTO(null, null, "+962792222222");
+        User result3 = updateUserUsecase.execute(userId, dto3);
 
         assertEquals("Updated1", result3.getName());
         assertEquals("updated@test.com", result3.getEmail());

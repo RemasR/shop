@@ -7,7 +7,7 @@ import com.example.shop.domain.repository.OrderRepository;
 
 import java.util.*;
 
-public class OrderRepositoryImpl implements OrderRepository {
+public class MemoryOrderRepository implements OrderRepository {
 
     private final Map<Integer, Order> orderStore = new HashMap<>();
 

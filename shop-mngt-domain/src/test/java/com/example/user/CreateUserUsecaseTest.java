@@ -1,6 +1,7 @@
 // CreateUserUsecaseTest.java
 package com.example.user;
 
+import com.example.shop.domain.dto.UserDTO;  // ✅ Import the DTO
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.user.CreateUserUsecase;
@@ -19,60 +20,51 @@ public class CreateUserUsecaseTest {
 
     @BeforeEach
     void setUp() {
-        // Create mock repository
         userRepository = mock(UserRepository.class);
-        // Inject mock into use case
         createUserUsecase = new CreateUserUsecase(userRepository);
     }
 
     @Test
-    void givenValidData_whenCreateUser_thenUserIsCreated() {
-        String name = "Khalid";
-        String email = "khalid@gmail.com";
-        String phoneNumber = "+962794128940";
+    void givenValidDTO_whenCreateUser_thenUserIsCreated() {
+        UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "+962794128940");
 
-        when(userRepository.findByEmail(email)).thenReturn(null);
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
         });
 
-        User result = createUserUsecase.execute(name, email, phoneNumber);
+        User result = createUserUsecase.execute(dto);
 
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(name, result.getName());
-        assertEquals(email, result.getEmail());
-        assertEquals(phoneNumber, result.getPhoneNumber());
+        assertEquals("Khalid", result.getName());
+        assertEquals("khalid@gmail.com", result.getEmail());
+        assertEquals("+962794128940", result.getPhoneNumber());
 
-        verify(userRepository, times(1)).findByEmail(email);
+        verify(userRepository, times(1)).findByEmail(dto.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
     void givenShortName_whenCreateUser_thenThrowsException() {
-        String shortName = "Ab";
-        String email = "khalid@gmail.com";
-        String phoneNumber = "+962794128940";
+        UserDTO dto = new UserDTO("Ab", "khalid@gmail.com", "+962794128940");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> createUserUsecase.execute(shortName, email, phoneNumber)
+                () -> createUserUsecase.execute(dto)
         );
 
         assertTrue(exception.getMessage().contains("Name"));
-
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void givenInvalidEmail_whenCreateUser_thenThrowsException() {
-        String name = "Khalid";
-        String invalidEmail = "not-an-email";
-        String phoneNumber = "+962794128940";
+        UserDTO dto = new UserDTO("Khalid", "not-an-email", "+962794128940");
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> createUserUsecase.execute(name, invalidEmail, phoneNumber)
+                () -> createUserUsecase.execute(dto)
         );
 
         verify(userRepository, never()).save(any(User.class));
@@ -80,13 +72,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenInvalidPhoneNumber_whenCreateUser_thenThrowsException() {
-        String name = "Khalid";
-        String email = "khalid@gmail.com";
-        String invalidPhone = "1234567890";
+        UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "1234567890");
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> createUserUsecase.execute(name, email, invalidPhone)
+                () -> createUserUsecase.execute(dto)
         );
 
         verify(userRepository, never()).save(any(User.class));
@@ -94,16 +84,24 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenExistingEmail_whenCreateUser_thenThrowsException() {
-        String name = "Khalid";
-        String email = "existing@gmail.com";
-        String phoneNumber = "+962794128940";
+        UserDTO dto = new UserDTO("Khalid", "existing@gmail.com", "+962794128940");
 
-        User existingUser = new User(UUID.randomUUID(), "Other", email, "+962791234567");
-        when(userRepository.findByEmail(email)).thenReturn(existingUser);
+        User existingUser = new User(UUID.randomUUID(), "Other", "existing@gmail.com", "+962791234567");
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(existingUser);
 
         assertThrows(
                 IllegalStateException.class,
-                () -> createUserUsecase.execute(name, email, phoneNumber)
+                () -> createUserUsecase.execute(dto)
+        );
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void givenNullDTO_whenCreateUser_thenThrowsException() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> createUserUsecase.execute(null)
         );
 
         verify(userRepository, never()).save(any(User.class));
@@ -111,9 +109,13 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenNullName_whenCreateUser_thenThrowsException() {
+        UserDTO dto = new UserDTO(null, "email@test.com", "+962794128940");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> createUserUsecase.execute(null, "email@test.com", "+962794128940")
+                () -> createUserUsecase.execute(dto)
         );
+
+        verify(userRepository, never()).save(any(User.class));
     }
 }

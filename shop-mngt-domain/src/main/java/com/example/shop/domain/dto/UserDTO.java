@@ -1,4 +1,4 @@
-package com.example.shop.dto;
+package com.example.shop.domain.dto;
 
 public class UserDTO {
     private String name;

@@ -5,7 +5,7 @@ import com.example.shop.domain.repository.UserRepository;
 
 import java.util.*;
 
-public class UserRepositoryImpl implements UserRepository {
+public class MemoryUserRepository implements UserRepository {
 
     private final Map<UUID, User> userStore = new HashMap<>();
     private final Map<String, UUID> emailIndex = new HashMap<>();

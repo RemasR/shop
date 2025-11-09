@@ -1,5 +1,6 @@
 package com.example.shop.domain.usecase.user;
 
+import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 
@@ -10,20 +11,19 @@ public class FindUserByEmailUsecase {
         this.userRepository = userRepository;
     }
 
-    public User execute(String email) {
-        if (email == null || email.trim().isEmpty()) {
+    public User execute(UserDTO dto) {
+        if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty");
         }
 
-        // Basic email format validation
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+        if (!dto.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
             throw new IllegalArgumentException("Invalid email format");
         }
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(dto.getEmail());
 
         if (user == null) {
-            throw new IllegalArgumentException("User with email " + email + " not found");
+            throw new IllegalArgumentException("User with email " + dto.getEmail() + " not found");
         }
 
         return user;

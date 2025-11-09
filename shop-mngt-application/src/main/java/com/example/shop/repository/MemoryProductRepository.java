@@ -5,7 +5,7 @@ import com.example.shop.domain.repository.ProductRepository;
 
 import java.util.*;
 
-public class ProductRepositoryImpl implements ProductRepository {
+public class MemoryProductRepository implements ProductRepository {
 
     private final Map<Integer, Product> productStore = new HashMap<>();
 

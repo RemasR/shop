@@ -27,7 +27,6 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenListAllUsers_thenReturnsAllUsers() {
-        // Arrange
         User user1 = new User(UUID.randomUUID(), "Alice", "alice@test.com", "+962791111111");
         User user2 = new User(UUID.randomUUID(), "Bob", "bob@test.com", "+962792222222");
         User user3 = new User(UUID.randomUUID(), "Charlie", "charlie@test.com", "+962793333333");
@@ -36,10 +35,8 @@ public class ListAllUserUsecaseTest {
 
         when(userRepository.findAll()).thenReturn(expectedUsers);
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         assertNotNull(result);
         assertEquals(3, result.size());
         assertTrue(result.contains(user1));
@@ -51,13 +48,10 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenNoUsersExist_thenReturnsEmptyList() {
-        // Arrange
         when(userRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
         assertEquals(0, result.size());
@@ -67,16 +61,13 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenSingleUserExists_thenReturnsSingletonList() {
-        // Arrange
         User user = new User(UUID.randomUUID(), "John", "john@test.com", "+962794444444");
         List<User> expectedUsers = Collections.singletonList(user);
 
         when(userRepository.findAll()).thenReturn(expectedUsers);
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(user, result.get(0));
@@ -88,18 +79,15 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenListAllUsersCalled_thenReturnsSameUsersEachTime() {
-        // Arrange
         User user1 = new User(UUID.randomUUID(), "Alice", "alice@test.com", "+962791111111");
         User user2 = new User(UUID.randomUUID(), "Bob", "bob@test.com", "+962792222222");
         List<User> users = Arrays.asList(user1, user2);
 
         when(userRepository.findAll()).thenReturn(users);
 
-        // Act
         List<User> result1 = listAllUserUsecase.execute();
         List<User> result2 = listAllUserUsecase.execute();
 
-        // Assert
         assertEquals(result1.size(), result2.size());
         assertEquals(result1.get(0).getId(), result2.get(0).getId());
         assertEquals(result1.get(1).getId(), result2.get(1).getId());
@@ -109,7 +97,6 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenLargeNumberOfUsers_thenReturnsAll() {
-        // Arrange - create 100 users
         List<User> manyUsers = Arrays.asList(
                 new User(UUID.randomUUID(), "User1", "user1@test.com", "+962791111111"),
                 new User(UUID.randomUUID(), "User2", "user2@test.com", "+962792222222"),
@@ -120,14 +107,11 @@ public class ListAllUserUsecaseTest {
 
         when(userRepository.findAll()).thenReturn(manyUsers);
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         assertNotNull(result);
         assertEquals(5, result.size());
 
-        // Verify all users are present
         for (int i = 0; i < manyUsers.size(); i++) {
             assertTrue(result.contains(manyUsers.get(i)));
         }
@@ -137,17 +121,14 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenListUsers_thenPreservesUserData() {
-        // Arrange
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Khalid", "khalid@test.com", "+962794128940");
         List<User> users = Collections.singletonList(user);
 
         when(userRepository.findAll()).thenReturn(users);
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         User resultUser = result.get(0);
         assertEquals(userId, resultUser.getId());
         assertEquals("Khalid", resultUser.getName());
@@ -159,7 +140,6 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void whenUsersHaveDifferentPhonePrefixes_thenAllReturned() {
-        // Arrange
         User user77 = new User(UUID.randomUUID(), "User77", "user77@test.com", "+962771234567");
         User user78 = new User(UUID.randomUUID(), "User78", "user78@test.com", "+962781234567");
         User user79 = new User(UUID.randomUUID(), "User79", "user79@test.com", "+962791234567");
@@ -168,10 +148,8 @@ public class ListAllUserUsecaseTest {
 
         when(userRepository.findAll()).thenReturn(users);
 
-        // Act
         List<User> result = listAllUserUsecase.execute();
 
-        // Assert
         assertEquals(3, result.size());
         assertTrue(result.stream().anyMatch(u -> u.getPhoneNumber().startsWith("+96277")));
         assertTrue(result.stream().anyMatch(u -> u.getPhoneNumber().startsWith("+96278")));
