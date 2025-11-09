@@ -1,6 +1,6 @@
 package com.example.shop.domain.usecase.user;
 
-import com.example.shop.domain.dto.UpdateUserDTO;
+import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 
@@ -13,7 +13,7 @@ public class UpdateUserUsecase {
         this.userRepository = userRepository;
     }
 
-    public User execute(UUID userId, UpdateUserDTO dto) {
+    public User execute(UUID userId, UserDTO dto) {
         if (userId == null) {
             throw new IllegalArgumentException("User ID cannot be null");
         }
