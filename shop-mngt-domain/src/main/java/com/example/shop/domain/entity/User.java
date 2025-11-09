@@ -1,7 +1,10 @@
 package com.example.shop.domain.entity;
 
+import lombok.Data;
+
 import java.util.UUID;
 
+@Data
 public class User {
 
     private final UUID id;
@@ -13,34 +16,6 @@ public class User {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }

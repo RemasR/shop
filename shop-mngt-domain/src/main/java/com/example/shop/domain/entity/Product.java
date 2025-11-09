@@ -1,5 +1,8 @@
 package com.example.shop.domain.entity;
 
+import lombok.Data;
+
+@Data
 public class Product {
     private final int id;
     private String name;
@@ -11,26 +14,6 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getPrice() {
-        return price;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.shop.domain.validators;
+package com.example.shop.domain.validators.user;
 
 public class PhonenumberValidator {
 }
