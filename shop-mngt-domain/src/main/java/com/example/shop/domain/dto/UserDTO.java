@@ -5,8 +5,6 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
 
-    public UserDTO() {}
-
     public UserDTO(String name, String email, String phoneNumber) {
         this.name = name;
         this.email = email;

@@ -27,12 +27,12 @@ public class UpdateUserUsecase {
         }
 
         if (dto.getName() != null) {
-            //validateName(dto.getName());
+            validateName(dto.getName());
             existingUser.setName(dto.getName());
         }
 
         if (dto.getEmail() != null) {
-            //validateEmail(dto.getEmail());
+            validateEmail(dto.getEmail());
             User userWithEmail = userRepository.findByEmail(dto.getEmail());
             if (userWithEmail != null && !userWithEmail.getId().equals(userId)) {
                 throw new IllegalStateException("Email already exists");
@@ -41,11 +41,31 @@ public class UpdateUserUsecase {
         }
 
         if (dto.getPhoneNumber() != null) {
-            //validatePhoneNumber(dto.getPhoneNumber());
+            validatePhoneNumber(dto.getPhoneNumber());
             existingUser.setPhoneNumber(dto.getPhoneNumber());
         }
 
         return userRepository.save(existingUser);
     }
 
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (name.length() < 3) {
+            throw new IllegalArgumentException("Name too short");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+    }
+
+    private void validatePhoneNumber(String phoneNumber) {
+        if (!phoneNumber.matches("^\\+9627[7-9]\\d{7}$")) {
+            throw new IllegalArgumentException("Invalid phone");
+        }
+    }
 }

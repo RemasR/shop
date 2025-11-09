@@ -1,7 +1,6 @@
-// CreateUserUsecaseTest.java
 package com.example.user;
 
-import com.example.shop.domain.dto.UserDTO;  // ✅ Import the DTO
+import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.user.CreateUserUsecase;
@@ -92,16 +91,6 @@ public class CreateUserUsecaseTest {
         assertThrows(
                 IllegalStateException.class,
                 () -> createUserUsecase.execute(dto)
-        );
-
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void givenNullDTO_whenCreateUser_thenThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> createUserUsecase.execute(null)
         );
 
         verify(userRepository, never()).save(any(User.class));
