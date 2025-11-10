@@ -23,7 +23,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenValidDTO_whenCreateUser_thenUserIsCreated() {
-        UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "+962794128940");
+        UserDTO dto = UserDTO.builder()
+                .name("Khalid")
+                .email("khalid@gmail.com")
+                .phoneNumber("+962794128940")
+                .build();
 
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -40,7 +44,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenShortName_whenCreateUser_thenThrowsException() {
-        UserDTO dto = new UserDTO("Ab", "khalid@gmail.com", "+962794128940");
+        UserDTO dto = UserDTO.builder()
+                .name("ab")
+                .email("khalid@gmail.com")
+                .phoneNumber("+962794128940")
+                .build();
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -53,7 +61,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenInvalidEmail_whenCreateUser_thenThrowsException() {
-        UserDTO dto = new UserDTO("Khalid", "not-an-email", "+962794128940");
+        UserDTO dto = UserDTO.builder()
+                .name("Khalid")
+                .email("not-an-email")
+                .phoneNumber("+962794128940")
+                .build();
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -65,7 +77,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenInvalidPhoneNumber_whenCreateUser_thenThrowsException() {
-        UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "1234567890");
+        UserDTO dto = UserDTO.builder()
+                .name("Khalid")
+                .email("not-an-email")
+                .phoneNumber("1234567890")
+                .build();
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -77,7 +93,11 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenNullName_whenCreateUser_thenThrowsException() {
-        UserDTO dto = new UserDTO(null, "email@test.com", "+962794128940");
+        UserDTO dto = UserDTO.builder()
+                .name(null)
+                .email("email@test.com")
+                .phoneNumber("+962794128940")
+                .build();
 
         assertThrows(
                 IllegalArgumentException.class,
