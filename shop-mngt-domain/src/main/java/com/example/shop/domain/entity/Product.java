@@ -1,8 +1,10 @@
 package com.example.shop.domain.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Product {
     private final int id;
     private String name;
