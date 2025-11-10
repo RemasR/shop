@@ -8,7 +8,7 @@ import lombok.Data;
 public class ProductDTO {
     private String name;
     private String description;
-    private double price;
+    private Double price;
 
     public ProductDTO(String name, String description, double price) {
         this.name = name;
