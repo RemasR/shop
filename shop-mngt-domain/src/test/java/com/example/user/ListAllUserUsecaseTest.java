@@ -112,8 +112,8 @@ public class ListAllUserUsecaseTest {
         assertNotNull(result);
         assertEquals(5, result.size());
 
-        for (int i = 0; i < manyUsers.size(); i++) {
-            assertTrue(result.contains(manyUsers.get(i)));
+        for (User manyUser : manyUsers) {
+            assertTrue(result.contains(manyUser));
         }
 
         verify(userRepository, times(1)).findAll();

@@ -25,9 +25,7 @@ public class CreateUserUsecaseTest {
     void givenValidDTO_whenCreateUser_thenUserIsCreated() {
         UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "+962794128940");
 
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-            return invocation.getArgument(0);
-        });
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User result = createUserUsecase.execute(dto);
 
