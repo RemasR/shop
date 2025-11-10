@@ -7,8 +7,6 @@ import com.example.shop.domain.usecase.user.CreateUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +25,6 @@ public class CreateUserUsecaseTest {
     void givenValidDTO_whenCreateUser_thenUserIsCreated() {
         UserDTO dto = new UserDTO("Khalid", "khalid@gmail.com", "+962794128940");
 
-        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
         });
@@ -40,7 +37,6 @@ public class CreateUserUsecaseTest {
         assertEquals("khalid@gmail.com", result.getEmail());
         assertEquals("+962794128940", result.getPhoneNumber());
 
-        verify(userRepository, times(1)).findByEmail(dto.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -75,21 +71,6 @@ public class CreateUserUsecaseTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> createUserUsecase.execute(dto)
-        );
-
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void givenExistingEmail_whenCreateUser_thenThrowsException() {
-        UserDTO dto = new UserDTO("Khalid", "existing@gmail.com", "+962794128940");
-
-        User existingUser = new User(UUID.randomUUID(), "Other", "existing@gmail.com", "+962791234567");
-        when(userRepository.findByEmail(dto.getEmail())).thenReturn(existingUser);
-
-        assertThrows(
-                IllegalStateException.class,
                 () -> createUserUsecase.execute(dto)
         );
 

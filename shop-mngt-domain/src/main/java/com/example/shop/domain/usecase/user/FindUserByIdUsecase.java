@@ -1,28 +1,41 @@
 package com.example.shop.domain.usecase.user;
 
+import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.validators.Validator;
+import com.example.shop.domain.validators.user.UserExistenceValidator;
+import com.example.shop.domain.validators.user.UserIdValidator;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class FindUserByIdUsecase {
+
     private final UserRepository userRepository;
+    private final List<Validator<UUID>> validators;
 
     public FindUserByIdUsecase(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.validators = List.of(
+                new UserIdValidator(),
+                new UserExistenceValidator(userRepository)
+        );
     }
 
-    public User execute(UUID userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
+    public User execute(UUID id) {
+        Set<SimpleViolation> violations = new HashSet<>();
+
+        for (Validator<UUID> validator : validators) {
+            violations.addAll(validator.validate(id));
         }
 
-        User user = userRepository.findById(userId);
-
-        if (user == null) {
-            throw new IllegalArgumentException("User with ID " + userId + " not found");
+        if (!violations.isEmpty()) {
+            throw new IllegalArgumentException("Validation failed: " + violations);
         }
 
-        return user;
+        return userRepository.findById(id);
     }
 }

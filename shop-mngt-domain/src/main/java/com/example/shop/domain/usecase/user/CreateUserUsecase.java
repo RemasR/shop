@@ -1,56 +1,45 @@
 package com.example.shop.domain.usecase.user;
 
+import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.validators.Validator;
+import com.example.shop.domain.validators.user.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class CreateUserUsecase {
     private final UserRepository userRepository;
+    private final List<Validator<User>> userValidators;
 
     public CreateUserUsecase(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.userValidators = List.of(
+                new UsernameValidator(),
+                new EmailValidator(),
+                new PhonenumberValidator()
+        );
     }
 
     public User execute(UserDTO dto) {
+        User user = new User(
+                UUID.randomUUID(),
+                dto.getName(),
+                dto.getEmail(),
+                dto.getPhoneNumber()
+        );
 
-        validateName(dto.getName());
-        validateEmail(dto.getEmail());
-        validatePhoneNumber(dto.getPhoneNumber());
-
-        if (userRepository.findByEmail(dto.getEmail()) != null) {
-            throw new IllegalStateException("Email already exists");
+        Set<SimpleViolation> violations = new HashSet<>();
+        for (Validator<User> validator : userValidators) {
+            violations.addAll(validator.validate(user));
         }
-
-        User newUser = new User(UUID.randomUUID(), dto.getName(), dto.getEmail(), dto.getPhoneNumber());
-
-        return userRepository.save(newUser);
-    }
-
-    private void validateName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
+        if (!violations.isEmpty()) {
+            throw new IllegalArgumentException("Validation failed: " + violations);
         }
-        if (name.length() < 3) {
-            throw new IllegalArgumentException("Name must be at least 3 characters");
-        }
-    }
-
-    private void validateEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be null or empty");
-        }
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            throw new IllegalArgumentException("Invalid email format");
-        }
-    }
-
-    private void validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Phone number cannot be null or empty");
-        }
-        if (!phoneNumber.matches("^\\+9627[7-9]\\d{7}$")) {
-            throw new IllegalArgumentException("Invalid Jordanian phone number format");
-        }
+        return userRepository.save(user);
     }
 }

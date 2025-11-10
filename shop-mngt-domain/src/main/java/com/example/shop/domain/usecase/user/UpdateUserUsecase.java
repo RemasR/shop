@@ -1,71 +1,71 @@
 package com.example.shop.domain.usecase.user;
 
+import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.validators.Validator;
+import com.example.shop.domain.validators.user.*;
 
-import java.util.UUID;
+import java.util.*;
 
 public class UpdateUserUsecase {
+
     private final UserRepository userRepository;
+    private final List<Validator<User>> userValidators;
+    private final List<Validator<UUID>> idValidators;
 
     public UpdateUserUsecase(UserRepository userRepository) {
         this.userRepository = userRepository;
+
+        this.userValidators = List.of(
+                new UsernameValidator(),
+                new EmailValidator(),
+                new PhonenumberValidator(),
+                new EmailUniquenessValidator(userRepository)
+        );
+
+        this.idValidators = List.of(
+                new UserIdValidator(),
+                new UserExistenceValidator(userRepository)
+        );
     }
 
     public User execute(UUID userId, UserDTO dto) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
+        validateAll(idValidators, userId);
+
         if (dto == null) {
             throw new IllegalArgumentException("Update data cannot be null");
         }
 
         User existingUser = userRepository.findById(userId);
-        if (existingUser == null) {
-            throw new IllegalArgumentException("User not found");
-        }
 
         if (dto.getName() != null) {
-            validateName(dto.getName());
             existingUser.setName(dto.getName());
         }
 
         if (dto.getEmail() != null) {
-            validateEmail(dto.getEmail());
-            User userWithEmail = userRepository.findByEmail(dto.getEmail());
-            if (userWithEmail != null && !userWithEmail.getId().equals(userId)) {
-                throw new IllegalStateException("Email already exists");
-            }
             existingUser.setEmail(dto.getEmail());
         }
 
         if (dto.getPhoneNumber() != null) {
-            validatePhoneNumber(dto.getPhoneNumber());
             existingUser.setPhoneNumber(dto.getPhoneNumber());
         }
+
+        validateAll(userValidators, existingUser);
 
         return userRepository.save(existingUser);
     }
 
-    private void validateName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (name.length() < 3) {
-            throw new IllegalArgumentException("Name too short");
-        }
-    }
+    private <T> void validateAll(List<Validator<T>> validators, T value) {
+        Set<SimpleViolation> violations = new HashSet<>();
 
-    private void validateEmail(String email) {
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            throw new IllegalArgumentException("Invalid email");
+        for (Validator<T> validator : validators) {
+            violations.addAll(validator.validate(value));
         }
-    }
 
-    private void validatePhoneNumber(String phoneNumber) {
-        if (!phoneNumber.matches("^\\+9627[7-9]\\d{7}$")) {
-            throw new IllegalArgumentException("Invalid phone");
+        if (!violations.isEmpty()) {
+            throw new IllegalArgumentException("Validation failed: " + violations);
         }
     }
 }
