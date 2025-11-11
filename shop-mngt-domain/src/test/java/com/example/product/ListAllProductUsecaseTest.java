@@ -40,7 +40,7 @@ public class ListAllProductUsecaseTest {
 
         List<Product> products = List.of(p1, p2);
 
-        when(productRepository.findAll()).thenReturn(products);
+        when(productRepository.findAllProducts()).thenReturn(products);
 
         List<Product> result = listAllProductUsecase.execute();
 
@@ -49,19 +49,19 @@ public class ListAllProductUsecaseTest {
         assertEquals("Laptop", result.get(0).getName());
         assertEquals("Phone", result.get(1).getName());
 
-        verify(productRepository, times(1)).findAll();
+        verify(productRepository, times(1)).findAllProducts();
     }
 
     @Test
     void givenNoProductsExist_whenExecute_shouldReturnEmptyList() {
-        when(productRepository.findAll()).thenReturn(List.of());
+        when(productRepository.findAllProducts()).thenReturn(List.of());
 
         List<Product> result = listAllProductUsecase.execute();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
-        verify(productRepository, times(1)).findAll();
+        verify(productRepository, times(1)).findAllProducts();
     }
 
 }

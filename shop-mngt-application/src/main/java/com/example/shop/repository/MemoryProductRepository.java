@@ -24,7 +24,7 @@ public class MemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<Product> findAllProducts() {
         return new ArrayList<>(productStore.values());
     }
 

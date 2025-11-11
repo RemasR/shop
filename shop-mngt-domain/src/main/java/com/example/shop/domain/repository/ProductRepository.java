@@ -10,7 +10,7 @@ public interface ProductRepository {
 
     Product findById(int id);
 
-    List<Product> findAll();
+    List<Product> findAllProducts();
 
     Product deleteById(Integer id);
 
