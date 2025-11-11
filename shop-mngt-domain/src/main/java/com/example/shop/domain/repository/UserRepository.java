@@ -11,7 +11,7 @@ public interface UserRepository {
 
     User findByEmail(String email);
 
-    List<User> findAll();
+    List<User> findAllUsers();
 
     void deleteById(UUID id);
 

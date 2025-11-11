@@ -13,6 +13,6 @@ public class ListAllUserUsecase {
     }
 
     public List<User> execute() {
-        return userRepository.findAll();
+        return userRepository.findAllUsers();
     }
 }

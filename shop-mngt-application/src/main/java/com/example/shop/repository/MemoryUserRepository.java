@@ -46,7 +46,7 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
         return new ArrayList<>(userStore.values());
     }
 

@@ -33,7 +33,7 @@ public class ListAllUserUsecaseTest {
 
         List<User> expectedUsers = Arrays.asList(user1, user2, user3);
 
-        when(userRepository.findAll()).thenReturn(expectedUsers);
+        when(userRepository.findAllUsers()).thenReturn(expectedUsers);
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -43,12 +43,12 @@ public class ListAllUserUsecaseTest {
         assertTrue(result.contains(user2));
         assertTrue(result.contains(user3));
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 
     @Test
     void whenNoUsersExist_thenReturnsEmptyList() {
-        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        when(userRepository.findAllUsers()).thenReturn(Collections.emptyList());
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -56,7 +56,7 @@ public class ListAllUserUsecaseTest {
         assertTrue(result.isEmpty());
         assertEquals(0, result.size());
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ListAllUserUsecaseTest {
         User user = new User(UUID.randomUUID(), "John", "john@test.com", "+962794444444");
         List<User> expectedUsers = Collections.singletonList(user);
 
-        when(userRepository.findAll()).thenReturn(expectedUsers);
+        when(userRepository.findAllUsers()).thenReturn(expectedUsers);
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -74,7 +74,7 @@ public class ListAllUserUsecaseTest {
         assertEquals("John", result.get(0).getName());
         assertEquals("john@test.com", result.get(0).getEmail());
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ListAllUserUsecaseTest {
         User user2 = new User(UUID.randomUUID(), "Bob", "bob@test.com", "+962792222222");
         List<User> users = Arrays.asList(user1, user2);
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findAllUsers()).thenReturn(users);
 
         List<User> result1 = listAllUserUsecase.execute();
         List<User> result2 = listAllUserUsecase.execute();
@@ -92,7 +92,7 @@ public class ListAllUserUsecaseTest {
         assertEquals(result1.get(0).getId(), result2.get(0).getId());
         assertEquals(result1.get(1).getId(), result2.get(1).getId());
 
-        verify(userRepository, times(2)).findAll();
+        verify(userRepository, times(2)).findAllUsers();
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ListAllUserUsecaseTest {
                 new User(UUID.randomUUID(), "User5", "user5@test.com", "+962795555555")
         );
 
-        when(userRepository.findAll()).thenReturn(manyUsers);
+        when(userRepository.findAllUsers()).thenReturn(manyUsers);
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -116,7 +116,7 @@ public class ListAllUserUsecaseTest {
             assertTrue(result.contains(manyUser));
         }
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ListAllUserUsecaseTest {
         User user = new User(userId, "Khalid", "khalid@test.com", "+962794128940");
         List<User> users = Collections.singletonList(user);
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findAllUsers()).thenReturn(users);
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -135,7 +135,7 @@ public class ListAllUserUsecaseTest {
         assertEquals("khalid@test.com", resultUser.getEmail());
         assertEquals("+962794128940", resultUser.getPhoneNumber());
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 
     @Test
@@ -146,7 +146,7 @@ public class ListAllUserUsecaseTest {
 
         List<User> users = Arrays.asList(user77, user78, user79);
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findAllUsers()).thenReturn(users);
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -155,6 +155,6 @@ public class ListAllUserUsecaseTest {
         assertTrue(result.stream().anyMatch(u -> u.getPhoneNumber().startsWith("+96278")));
         assertTrue(result.stream().anyMatch(u -> u.getPhoneNumber().startsWith("+96279")));
 
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllUsers();
     }
 }
