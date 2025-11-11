@@ -3,6 +3,7 @@ package com.example.user;
 import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.user.CreateUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,11 +15,13 @@ public class CreateUserUsecaseTest {
 
     private UserRepository userRepository;
     private CreateUserUsecase createUserUsecase;
+    private ValidationExecutor validationExecutor;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        createUserUsecase = new CreateUserUsecase(userRepository);
+        validationExecutor = mock(ValidationExecutor.class);
+        createUserUsecase = new CreateUserUsecase(userRepository, validationExecutor);
     }
 
     @Test
