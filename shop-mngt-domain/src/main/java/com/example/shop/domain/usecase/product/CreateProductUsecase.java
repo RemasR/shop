@@ -28,9 +28,6 @@ public class CreateProductUsecase {
         if (dto == null) {
             throw new IllegalArgumentException("Product data cannot be null");
         }
-        if (dto.getPrice() == null) {
-            throw new IllegalArgumentException("Price cannot be null");
-        }
         Product product = Product.builder()
                 .id(0)
                 .name(dto.getName())

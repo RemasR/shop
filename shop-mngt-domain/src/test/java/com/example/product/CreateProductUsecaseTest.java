@@ -75,17 +75,4 @@ public class CreateProductUsecaseTest {
         assertThrows(IllegalArgumentException.class, () -> createProductUsecase.execute(dto));
         verify(productRepository, never()).save(any());
     }
-
-    @Test
-    void givenNullPrice_whenCreateProduct_shouldThrowExceptionWhenPriceIsNull() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Phone")
-                .price(null)
-                .description("desc")
-                .build();
-
-        assertThrows(IllegalArgumentException.class, () -> createProductUsecase.execute(dto));
-        verify(productRepository, never()).save(any());
-    }
-
 }
