@@ -10,7 +10,7 @@ public class ProductDTO {
     private String description;
     private Double price;
 
-    public ProductDTO(String name, String description, double price) {
+    public ProductDTO(String name, String description, Double price) {
         this.name = name;
         this.description = description;
         this.price = price;
