@@ -54,7 +54,6 @@ public class ListAllUserUsecaseTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        assertEquals(0, result.size());
 
         verify(userRepository, times(1)).findAllUsers();
     }
@@ -62,9 +61,7 @@ public class ListAllUserUsecaseTest {
     @Test
     void whenSingleUserExists_thenReturnsSingletonList() {
         User user = new User(UUID.randomUUID(), "John", "john@test.com", "+962794444444");
-        List<User> expectedUsers = Collections.singletonList(user);
-
-        when(userRepository.findAllUsers()).thenReturn(expectedUsers);
+        when(userRepository.findAllUsers()).thenReturn(Collections.singletonList(user));
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -111,7 +108,6 @@ public class ListAllUserUsecaseTest {
 
         assertNotNull(result);
         assertEquals(5, result.size());
-
         for (User manyUser : manyUsers) {
             assertTrue(result.contains(manyUser));
         }
@@ -123,9 +119,7 @@ public class ListAllUserUsecaseTest {
     void whenListUsers_thenPreservesUserData() {
         UUID userId = UUID.randomUUID();
         User user = new User(userId, "Khalid", "khalid@test.com", "+962794128940");
-        List<User> users = Collections.singletonList(user);
-
-        when(userRepository.findAllUsers()).thenReturn(users);
+        when(userRepository.findAllUsers()).thenReturn(Collections.singletonList(user));
 
         List<User> result = listAllUserUsecase.execute();
 
@@ -144,9 +138,7 @@ public class ListAllUserUsecaseTest {
         User user78 = new User(UUID.randomUUID(), "User78", "user78@test.com", "+962781234567");
         User user79 = new User(UUID.randomUUID(), "User79", "user79@test.com", "+962791234567");
 
-        List<User> users = Arrays.asList(user77, user78, user79);
-
-        when(userRepository.findAllUsers()).thenReturn(users);
+        when(userRepository.findAllUsers()).thenReturn(Arrays.asList(user77, user78, user79));
 
         List<User> result = listAllUserUsecase.execute();
 

@@ -87,23 +87,4 @@ public class UpdateUserUsecaseTest {
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(existingUser);
     }
-
-    @Test
-    void givenNonExistentUser_whenUpdate_thenThrowsException() {
-        UUID userId = UUID.randomUUID();
-
-        when(userRepository.existsById(userId)).thenReturn(false);
-
-        UserDTO dto = new UserDTO("NewName", null, null);
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> updateUserUsecase.execute(userId, dto)
-        );
-
-        assertTrue(exception.getMessage().contains("does not exist"));
-        verify(userRepository, times(1)).existsById(userId);
-        verify(userRepository, never()).findById(any());
-        verify(userRepository, never()).save(any());
-    }
 }

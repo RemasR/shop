@@ -17,15 +17,14 @@ public class ValidationExecutor<T> {
 
     }
 
-    public Set<SimpleViolation> validate(T target, List<Validator<T>> validators) {
+    public void validateAndThrow(T target) {
         Set<SimpleViolation> violations = new HashSet<>();
 
-        for (Validator<T> validator : validators) {
+        for (Validator<T> validator : this.validators) {
             violations.addAll(validator.validate(target));
         }
         if (!violations.isEmpty()) {
-            throw new IllegalArgumentException("Validation failed: " + violations);
+            throw new ValidationException(violations);
         }
-        return violations;
     }
 }

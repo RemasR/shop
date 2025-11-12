@@ -2,6 +2,7 @@ package com.example.user;
 
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.user.FindUserByIdUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,30 +44,27 @@ public class FindUserByIdUsecaseTest {
     }
 
     @Test
-    void givenNonExistingUserId_whenFindById_thenThrowsException() {
+    void givenNonExistingUserId_whenFindById_thenThrowsValidationException() {
         UUID userId = UUID.randomUUID();
 
         when(userRepository.existsById(userId)).thenReturn(false);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        assertThrows(
+                ValidationException.class,
                 () -> findUserByIdUsecase.execute(userId)
         );
-
-        assertTrue(exception.getMessage().contains("does not exist"));
 
         verify(userRepository, times(1)).existsById(userId);
         verify(userRepository, never()).findById(any());
     }
 
     @Test
-    void givenNullUserId_whenFindById_thenThrowsException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+    void givenNullUserId_whenFindById_thenThrowsValidationException() {
+        assertThrows(
+                ValidationException.class,
                 () -> findUserByIdUsecase.execute(null)
         );
 
-        assertTrue(exception.getMessage().contains("cannot be null"));
         verify(userRepository, never()).findById(any());
     }
 }

@@ -1,15 +1,18 @@
 package com.example.user;
 
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.user.DeleteUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class DeleteUserUsecaseTest {
+
     private UserRepository userRepository;
     private DeleteUserUsecase deleteUserUsecase;
 
@@ -30,17 +33,17 @@ public class DeleteUserUsecaseTest {
     }
 
     @Test
-    void givenNonExistingUserId_whenDeleteUser_thenThrowsException() {
+    void givenNonExistingUserId_whenDeleteUser_thenThrowsValidationException() {
         UUID id = UUID.randomUUID();
         when(userRepository.existsById(id)).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> deleteUserUsecase.execute(id));
+        assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(id));
         verify(userRepository, never()).deleteById(id);
     }
 
     @Test
-    void givenNullId_whenDeleteUser_thenThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> deleteUserUsecase.execute(null));
+    void givenNullId_whenDeleteUser_thenThrowsValidationException() {
+        assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(null));
         verify(userRepository, never()).deleteById(any());
     }
 }

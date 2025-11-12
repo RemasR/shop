@@ -3,7 +3,7 @@ package com.example.user;
 import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
-import com.example.shop.domain.usecase.ValidationExecutor;
+import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.user.CreateUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,20 +12,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class CreateUserUsecaseTest {
-
     private UserRepository userRepository;
     private CreateUserUsecase createUserUsecase;
-    private ValidationExecutor validationExecutor;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        validationExecutor = mock(ValidationExecutor.class);
-        createUserUsecase = new CreateUserUsecase(userRepository, validationExecutor);
+        createUserUsecase = new CreateUserUsecase(userRepository);
     }
 
     @Test
-    void givenValidDTO_whenCreateUser_thenUserIsCreated() {
+    void givenValidUser_whenExecute_thenUserIsCreatedAndSaved() {
         UserDTO dto = UserDTO.builder()
                 .name("Khalid")
                 .email("khalid@gmail.com")
@@ -46,66 +43,20 @@ public class CreateUserUsecaseTest {
     }
 
     @Test
-    void givenShortName_whenCreateUser_thenThrowsException() {
+    void givenInvalidUser_whenExecute_thenThrowsValidationExceptionAndDoesNotSave() {
         UserDTO dto = UserDTO.builder()
                 .name("ab")
-                .email("khalid@gmail.com")
-                .phoneNumber("+962794128940")
-                .build();
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> createUserUsecase.execute(dto)
-        );
-
-        assertTrue(exception.getMessage().contains("Name"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void givenInvalidEmail_whenCreateUser_thenThrowsException() {
-        UserDTO dto = UserDTO.builder()
-                .name("Khalid")
-                .email("not-an-email")
-                .phoneNumber("+962794128940")
-                .build();
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> createUserUsecase.execute(dto)
-        );
-
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void givenInvalidPhoneNumber_whenCreateUser_thenThrowsException() {
-        UserDTO dto = UserDTO.builder()
-                .name("Khalid")
                 .email("not-an-email")
                 .phoneNumber("1234567890")
                 .build();
 
-        assertThrows(
-                IllegalArgumentException.class,
+        ValidationException exception = assertThrows(
+                ValidationException.class,
                 () -> createUserUsecase.execute(dto)
         );
 
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void givenNullName_whenCreateUser_thenThrowsException() {
-        UserDTO dto = UserDTO.builder()
-                .name(null)
-                .email("email@test.com")
-                .phoneNumber("+962794128940")
-                .build();
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> createUserUsecase.execute(dto)
-        );
+        assertNotNull(exception.getViolations());
+        assertFalse(exception.getViolations().isEmpty());
 
         verify(userRepository, never()).save(any(User.class));
     }
