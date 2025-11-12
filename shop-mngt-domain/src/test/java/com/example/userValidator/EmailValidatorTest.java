@@ -2,6 +2,7 @@ package com.example.userValidator;
 
 import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.entity.User;
+import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.validators.user.EmailValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class EmailValidatorTest {
 
     private EmailValidator validator;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        validator = new EmailValidator();
+        validator = new EmailValidator(userRepository = mock(UserRepository.class));
     }
 
     @Test

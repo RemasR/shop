@@ -21,9 +21,8 @@ public class UpdateUserUsecase {
         this.userValidationExecutor = new ValidationExecutor<>(
                 List.of(
                         new UsernameValidator(),
-                        new EmailValidator(),
-                        new PhonenumberValidator(),
-                        new EmailUniquenessValidator(userRepository)
+                        new EmailValidator(userRepository),
+                        new PhonenumberValidator()
                 )
         );
 

@@ -19,7 +19,7 @@ public class CreateUserUsecase {
         this.validationExecutor = new ValidationExecutor<>(
                 List.of(
                         new UsernameValidator(),
-                        new EmailValidator(),
+                        new EmailValidator(userRepository),
                         new PhonenumberValidator()
         ));
     }
