@@ -1,49 +1,52 @@
 package com.example.user;
 
-import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;
+import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.user.DeleteUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeleteUserUsecaseTest {
 
     private UserRepository userRepository;
+    private ValidationExecutor<UUID> validationExecutor;
     private DeleteUserUsecase deleteUserUsecase;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        deleteUserUsecase = new DeleteUserUsecase(userRepository);
+        validationExecutor = mock(ValidationExecutor.class);
+        deleteUserUsecase = new DeleteUserUsecase(userRepository, validationExecutor);
     }
 
     @Test
-    void givenExistingUserId_whenDeleteUser_thenRepositoryCalled() {
-        UUID id = UUID.randomUUID();
-        when(userRepository.existsById(id)).thenReturn(true);
+    void givenValidId_whenExecute_thenDeletesUser() {
+        UUID userId = UUID.randomUUID();
 
-        deleteUserUsecase.execute(id);
+        when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
 
-        verify(userRepository, times(1)).deleteById(id);
+        deleteUserUsecase.execute(userId);
+
+        verify(validationExecutor, times(1)).validateAndThrow(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
 
     @Test
-    void givenNonExistingUserId_whenDeleteUser_thenThrowsValidationException() {
-        UUID id = UUID.randomUUID();
-        when(userRepository.existsById(id)).thenReturn(false);
+    void givenInvalidId_whenExecute_thenThrowsValidationException() {
+        UUID userId = UUID.randomUUID();
 
-        assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(id));
-        verify(userRepository, never()).deleteById(id);
-    }
+        doThrow(new ValidationException(Set.of())).when(validationExecutor).validateAndThrow(userId);
 
-    @Test
-    void givenNullId_whenDeleteUser_thenThrowsValidationException() {
-        assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(null));
+        assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(userId));
+
+        verify(validationExecutor, times(1)).validateAndThrow(userId);
         verify(userRepository, never()).deleteById(any());
     }
 }
