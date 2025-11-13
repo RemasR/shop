@@ -32,7 +32,6 @@ public class FindUserByIdUsecaseTest {
         UUID userId = UUID.randomUUID();
         User expectedUser = new User(userId, "Khalid", "khalid@test.com", "+962794128940");
 
-        // Validator passes
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(expectedUser);
 
@@ -52,7 +51,8 @@ public class FindUserByIdUsecaseTest {
     void givenInvalidUserId_whenFindById_thenThrowsValidationException() {
         UUID userId = UUID.randomUUID();
 
-        doThrow(new ValidationException(Set.of())).when(validationExecutor).validateAndThrow(userId);
+        when(validationExecutor.validateAndThrow(userId))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> findUserByIdUsecase.execute(userId));
 
@@ -62,7 +62,8 @@ public class FindUserByIdUsecaseTest {
 
     @Test
     void givenNullUserId_whenFindById_thenThrowsValidationException() {
-        doThrow(new ValidationException(Set.of())).when(validationExecutor).validateAndThrow(null);
+        when(validationExecutor.validateAndThrow(null))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> findUserByIdUsecase.execute(null));
 

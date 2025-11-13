@@ -111,7 +111,8 @@ public class UpdateUserUsecaseTest {
                 new SimpleViolation("email", "invalid")
         );
 
-        doThrow(new ValidationException(violations)).when(validationExecutor).validateAndThrow(dto);
+        when(validationExecutor.validateAndThrow(dto))
+                .thenThrow(new ValidationException(violations));
 
         ValidationException exception = assertThrows(
                 ValidationException.class,

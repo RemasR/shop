@@ -42,7 +42,8 @@ public class DeleteUserUsecaseTest {
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
         UUID userId = UUID.randomUUID();
 
-        doThrow(new ValidationException(Set.of())).when(validationExecutor).validateAndThrow(userId);
+        when(validationExecutor.validateAndThrow(userId))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> deleteUserUsecase.execute(userId));
 

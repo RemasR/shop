@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 import java.util.Set;
-
 
 public class CreateUserUsecaseTest {
 
@@ -64,7 +62,9 @@ public class CreateUserUsecaseTest {
                 new SimpleViolation("name", "too short"),
                 new SimpleViolation("email", "invalid")
         );
-        doThrow(new ValidationException(violations)).when(validationExecutor).validateAndThrow(dto);
+
+        when(validationExecutor.validateAndThrow(dto))
+                .thenThrow(new ValidationException(violations));
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
