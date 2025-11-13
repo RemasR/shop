@@ -112,7 +112,7 @@ public class UpdateUserUsecaseTest {
         );
 
         when(validationExecutor.validateAndThrow(dto))
-                .thenThrow(new ValidationException(violations));
+                .thenThrow(new ValidationException(Set.of()));
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
