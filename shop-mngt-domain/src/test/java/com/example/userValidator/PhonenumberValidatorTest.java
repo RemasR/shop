@@ -22,7 +22,11 @@ public class PhonenumberValidatorTest {
 
     @Test
     void givenValidPhoneNumber_whenValidate_thenNoViolations() {
-        User user = new User(UUID.randomUUID(), "Remas", "remas@test.com", "+962794583728");
+        User user = User.builder()
+                .name("remas")
+                .email("remas@test.com")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
@@ -31,7 +35,10 @@ public class PhonenumberValidatorTest {
 
     @Test
     void givenNullPhoneNumber_whenValidate_thenReturnsViolation() {
-        User user = new User(UUID.randomUUID(), "Remas", "remas@test.com", null);
+        User user = User.builder()
+                .name("remas")
+                .email("remas@test.com")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
@@ -50,7 +57,11 @@ public class PhonenumberValidatorTest {
 
     @Test
     void givenInvalidPhoneNumber_whenValidate_thenReturnsViolation() {
-        User user = new User(UUID.randomUUID(), "Remas", "remas@test.com", "123abc");
+        User user = User.builder()
+                .name("remas")
+                .email("remas@test.com")
+                .phoneNumber("+s33a")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 

@@ -1,6 +1,7 @@
 package com.example.userValidator;
 
 import com.example.shop.domain.dto.SimpleViolation;
+import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.validators.user.UsernameValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,11 @@ public class UsernameValidatorTest {
 
     @Test
     void givenValidName_whenValidate_thenNoViolations() {
-        User user = new User(UUID.randomUUID(), "remas", "remas@test.com", "+962794583728");
+        User user = User.builder()
+                .name("remas")
+                .email("remas@test.com")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
@@ -31,7 +36,10 @@ public class UsernameValidatorTest {
 
     @Test
     void givenNullName_whenValidate_thenReturnsViolation() {
-        User user = new User(UUID.randomUUID(), null, "remas@test.com", "+962794583728");
+        User user = User.builder()
+                .email("remas@test.com")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 

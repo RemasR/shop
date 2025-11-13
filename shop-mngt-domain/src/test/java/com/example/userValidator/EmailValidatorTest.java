@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -25,7 +24,11 @@ public class EmailValidatorTest {
 
     @Test
     void givenValidEmail_whenValidate_thenNoViolations() {
-        User user = new User(UUID.randomUUID(), "Remas", "remas@test.com", "+962794583728");
+        User user = User.builder()
+                .name("remas")
+                .email("remas@test.com")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
@@ -34,7 +37,10 @@ public class EmailValidatorTest {
 
     @Test
     void givenNullEmail_whenValidate_thenReturnsViolation() {
-        User user = new User(UUID.randomUUID(), "Remas", null, "+962794583728");
+        User user = User.builder()
+                .name("remas")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
@@ -53,7 +59,11 @@ public class EmailValidatorTest {
 
     @Test
     void givenInvalidEmail_whenValidate_thenReturnsViolation() {
-        User user = new User(UUID.randomUUID(), "Remas", "invalid-email", "+962794583728");
+        User user = User.builder()
+                .name("remas")
+                .email("invalid-email")
+                .phoneNumber("+962794583728")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(user);
 
