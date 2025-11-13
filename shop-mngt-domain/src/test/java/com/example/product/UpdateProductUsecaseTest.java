@@ -78,8 +78,8 @@ public class UpdateProductUsecaseTest {
                 .build();
 
         when(idValidator.validateAndThrow(productId)).thenReturn(Set.of());
-        doThrow(new ValidationException(Set.of()))
-                .when(productValidator).validateAndThrow(existing);
+        when(productValidator.validateAndThrow(existing))
+                .thenThrow(new ValidationException(Set.of()));
         when(productRepository.findById(productId)).thenReturn(existing);
 
         assertThrows(ValidationException.class, () -> updateProductUsecase.execute(productId, dto));

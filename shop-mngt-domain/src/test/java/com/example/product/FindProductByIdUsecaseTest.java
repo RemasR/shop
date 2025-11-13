@@ -51,8 +51,8 @@ public class FindProductByIdUsecaseTest {
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
         int invalidId = -1;
 
-        doThrow(new ValidationException(Set.of()))
-                .when(validationExecutor).validateAndThrow(invalidId);
+        when(validationExecutor.validateAndThrow(invalidId))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> findProductByIdUsecase.execute(invalidId));
 

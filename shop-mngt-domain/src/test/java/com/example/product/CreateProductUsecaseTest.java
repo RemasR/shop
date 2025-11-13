@@ -57,8 +57,8 @@ public class CreateProductUsecaseTest {
                 .description("desc")
                 .build();
 
-        doThrow(new ValidationException(Set.of()))
-                .when(validationExecutor).validateAndThrow(dto);
+        when(validationExecutor.validateAndThrow(dto))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> createProductUsecase.execute(dto));
 

@@ -41,8 +41,8 @@ public class DeleteProductUsecaseTest {
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
         int invalidId = -1;
 
-        doThrow(new ValidationException(Set.of()))
-                .when(validationExecutor).validateAndThrow(invalidId);
+        when(validationExecutor.validateAndThrow(invalidId))
+                .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> deleteProductUsecase.execute(invalidId));
 
