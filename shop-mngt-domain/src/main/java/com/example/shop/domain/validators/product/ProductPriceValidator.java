@@ -16,10 +16,10 @@ public class ProductPriceValidator implements Validator<Product> {
             throw new IllegalArgumentException("Product cannot be null");
         }
 
-        if (product.getPrice() < 0) {
-            violations.add(new SimpleViolation("price", "Price cannot be negative"));
+        if (product.getPrice() <= 0) {
+            violations.add(new SimpleViolation("product.price", "Price cannot be negative"));
         } else if (product.getPrice() > 1_000_000) {
-            violations.add(new SimpleViolation("price", "Price exceeds allowed maximum"));
+            violations.add(new SimpleViolation("product.price", "Price exceeds allowed maximum"));
         }
 
         return violations;
