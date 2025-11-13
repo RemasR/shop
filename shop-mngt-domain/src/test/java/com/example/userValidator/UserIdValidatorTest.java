@@ -22,6 +22,7 @@ public class UserIdValidatorTest {
     @Test
     void givenNonNullId_whenValidate_thenNoViolations() {
         UUID id = UUID.randomUUID();
+
         Set<SimpleViolation> violations = validator.validate(id);
 
         assertTrue(violations.isEmpty());
@@ -33,7 +34,13 @@ public class UserIdValidatorTest {
 
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
-        SimpleViolation violation = violations.iterator().next();
+
+        SimpleViolation violation = null;
+        for (SimpleViolation v : violations) {
+            violation = v;
+            break;
+        }
+
         assertEquals("user.id", violation.getViolator());
         assertTrue(violation.getViolation().contains("cannot be null"));
     }

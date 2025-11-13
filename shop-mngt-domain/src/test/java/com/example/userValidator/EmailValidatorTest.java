@@ -26,17 +26,27 @@ public class EmailValidatorTest {
     @Test
     void givenValidEmail_whenValidate_thenNoViolations() {
         User user = new User(UUID.randomUUID(), "Remas", "remas@test.com", "+962794583728");
+
         Set<SimpleViolation> violations = validator.validate(user);
+
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void givenNullEmail_whenValidate_thenReturnsViolation() {
         User user = new User(UUID.randomUUID(), "Remas", null, "+962794583728");
+
         Set<SimpleViolation> violations = validator.validate(user);
+
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
-        SimpleViolation violation = violations.iterator().next();
+
+        SimpleViolation violation = null;
+        for (SimpleViolation v : violations) {
+            violation = v;
+            break;
+        }
+
         assertEquals("user.email", violation.getViolator());
         assertTrue(violation.getViolation().contains("cannot be null or empty"));
     }
@@ -44,10 +54,18 @@ public class EmailValidatorTest {
     @Test
     void givenInvalidEmail_whenValidate_thenReturnsViolation() {
         User user = new User(UUID.randomUUID(), "Remas", "invalid-email", "+962794583728");
+
         Set<SimpleViolation> violations = validator.validate(user);
+
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
-        SimpleViolation violation = violations.iterator().next();
+
+        SimpleViolation violation = null;
+        for (SimpleViolation v : violations) {
+            violation = v;
+            break;
+        }
+
         assertEquals("user.email", violation.getViolator());
         assertTrue(violation.getViolation().contains("Invalid"));
     }
