@@ -2,10 +2,8 @@ package com.example.shop.domain.usecase.user;
 
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
-import com.example.shop.domain.validators.user.UserExistenceValidator;
-import com.example.shop.domain.validators.user.UserIdValidator;
+import com.example.shop.domain.validators.user.*;
 
-import java.util.List;
 import java.util.UUID;
 
 public class DeleteUserUsecase {
@@ -13,14 +11,9 @@ public class DeleteUserUsecase {
     private final UserRepository userRepository;
     private final ValidationExecutor<UUID> validationExecutor;
 
-    public DeleteUserUsecase(UserRepository userRepository) {
+    public DeleteUserUsecase(UserRepository userRepository, ValidationExecutor<UUID> validationExecutor) {
         this.userRepository = userRepository;
-        this.validationExecutor = new ValidationExecutor<>(
-                List.of(
-                        new UserIdValidator(),
-                        new UserExistenceValidator(userRepository)
-                )
-        );
+        this.validationExecutor = validationExecutor;
     }
 
     public void execute(UUID id) {

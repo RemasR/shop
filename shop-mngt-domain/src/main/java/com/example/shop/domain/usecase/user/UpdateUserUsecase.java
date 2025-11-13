@@ -6,39 +6,23 @@ import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.validators.user.*;
 
-import java.util.List;
 import java.util.UUID;
 
 public class UpdateUserUsecase {
 
     private final UserRepository userRepository;
-    private final ValidationExecutor<User> userValidationExecutor;
-    private final ValidationExecutor<UUID> idValidationExecutor;
+    private final ValidationExecutor<UserDTO> validationExecutor;
 
-    public UpdateUserUsecase(UserRepository userRepository) {
+    public UpdateUserUsecase(UserRepository userRepository, ValidationExecutor<UserDTO> validationExecutor) {
         this.userRepository = userRepository;
-
-        this.userValidationExecutor = new ValidationExecutor<>(
-                List.of(
-                        new UsernameValidator(),
-                        new EmailValidator(userRepository),
-                        new PhonenumberValidator()
-                )
-        );
-
-        this.idValidationExecutor = new ValidationExecutor<>(
-                List.of(
-                        new UserIdValidator(),
-                        new UserExistenceValidator(userRepository)
-                )
-        );
+        this.validationExecutor = validationExecutor;
     }
 
     public User execute(UUID userId, UserDTO dto) {
-        idValidationExecutor.validateAndThrow(userId);
+        validationExecutor.validateAndThrow(dto);
 
-        if (dto == null) {
-            throw new IllegalArgumentException("Update data cannot be null");
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("User not found");
         }
 
         User existingUser = userRepository.findById(userId);
@@ -47,8 +31,7 @@ public class UpdateUserUsecase {
         if (dto.getEmail() != null) existingUser.setEmail(dto.getEmail());
         if (dto.getPhoneNumber() != null) existingUser.setPhoneNumber(dto.getPhoneNumber());
 
-        userValidationExecutor.validateAndThrow(existingUser);
-
         return userRepository.save(existingUser);
     }
 }
+

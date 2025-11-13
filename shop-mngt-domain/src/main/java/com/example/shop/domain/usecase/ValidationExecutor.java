@@ -17,7 +17,7 @@ public class ValidationExecutor<T> {
 
     }
 
-    public void validateAndThrow(T target) {
+    public Set<SimpleViolation> validateAndThrow(T target) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         for (Validator<T> validator : this.validators) {
@@ -26,5 +26,6 @@ public class ValidationExecutor<T> {
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
+        return violations;
     }
 }

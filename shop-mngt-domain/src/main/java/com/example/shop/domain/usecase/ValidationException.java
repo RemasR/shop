@@ -11,8 +11,4 @@ public class ValidationException extends RuntimeException {
         super("Validation failed: " + violations);
         this.violations = violations;
     }
-
-    public Set<SimpleViolation> getViolations() {
-        return violations;
-    }
 }

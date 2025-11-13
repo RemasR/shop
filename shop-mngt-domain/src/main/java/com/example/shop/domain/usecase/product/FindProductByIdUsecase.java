@@ -1,36 +1,21 @@
 package com.example.shop.domain.usecase.product;
 
-import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
-import com.example.shop.domain.validators.Validator;
-import com.example.shop.domain.validators.product.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.example.shop.domain.usecase.ValidationExecutor;
 
 public class FindProductByIdUsecase {
 
     private final ProductRepository productRepository;
-    private final List<Validator<Integer>> productValidators;
+    private final ValidationExecutor<Integer> validationExecutor;
 
-    public FindProductByIdUsecase(ProductRepository productRepository) {
+    public FindProductByIdUsecase(ProductRepository productRepository, ValidationExecutor<Integer> validationExecutor) {
         this.productRepository = productRepository;
-        this.productValidators = List.of(
-                new ProductExistenceValidator(productRepository)
-        );
+        this.validationExecutor = validationExecutor;
     }
 
     public Product execute(Integer id) {
-        Set<SimpleViolation> violations = new HashSet<>();
-        for (Validator<Integer> validator : productValidators) {
-            violations.addAll(validator.validate(id));
-        }
-        if (!violations.isEmpty()) {
-            throw new IllegalArgumentException("Validation failed: " + violations);
-        }
-
+        validationExecutor.validateAndThrow(id);
         return productRepository.findById(id);
     }
 }
