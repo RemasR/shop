@@ -2,64 +2,60 @@ package com.example.product;
 
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
+import com.example.shop.domain.usecase.ValidationExecutor;
+import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.product.FindProductByIdUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FindProductByIdUsecaseTest {
 
     private ProductRepository productRepository;
+    private ValidationExecutor<Integer> validationExecutor;
     private FindProductByIdUsecase findProductByIdUsecase;
 
     @BeforeEach
     void setUp() {
         productRepository = mock(ProductRepository.class);
-        findProductByIdUsecase = new FindProductByIdUsecase(productRepository);
+        validationExecutor = mock(ValidationExecutor.class);
+        findProductByIdUsecase = new FindProductByIdUsecase(productRepository, validationExecutor);
     }
 
     @Test
-    void givenExistingProduct_whenExecute_shouldReturnProduct() {
+    void givenValidId_whenExecute_thenReturnsProduct() {
+        int productId = 1;
+
         Product product = Product.builder()
-                .id(1)
+                .id(productId)
                 .name("Laptop")
                 .price(1500.0)
                 .description("Gaming laptop")
                 .build();
 
-        when(productRepository.existsById(1)).thenReturn(true);
-        when(productRepository.findById(1)).thenReturn(product);
+        when(validationExecutor.validateAndThrow(productId)).thenReturn(Set.of());
+        when(productRepository.findById(productId)).thenReturn(product);
 
-        Product result = findProductByIdUsecase.execute(product.getId());
+        Product result = findProductByIdUsecase.execute(productId);
 
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals("Laptop", result.getName());
-        assertEquals(1500.0, result.getPrice());
-
-        verify(productRepository, times(1)).existsById(1);
-        verify(productRepository, times(1)).findById(1);
-        verify(productRepository, never()).save(any());
+        assertEquals(product, result);
+        verify(validationExecutor, times(1)).validateAndThrow(productId);
+        verify(productRepository, times(1)).findById(productId);
     }
 
     @Test
-    void givenNonExistingProductId_whenFindById_thenThrowsException() {
+    void givenInvalidId_whenExecute_thenThrowsValidationException() {
+        int invalidId = -1;
 
-        Integer nonExistingProductId = -1;
+        doThrow(new ValidationException(Set.of()))
+                .when(validationExecutor).validateAndThrow(invalidId);
 
-        when(productRepository.existsById(nonExistingProductId)).thenReturn(false);
+        assertThrows(ValidationException.class, () -> findProductByIdUsecase.execute(invalidId));
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> findProductByIdUsecase.execute(nonExistingProductId)
-        );
-
-        assertTrue(exception.getMessage().contains("does not exist"));
-
-        verify(productRepository, times(1)).existsById(nonExistingProductId);
-        verify(productRepository, never()).findById(nonExistingProductId);
+        verify(productRepository, never()).findById(anyInt());
     }
 }

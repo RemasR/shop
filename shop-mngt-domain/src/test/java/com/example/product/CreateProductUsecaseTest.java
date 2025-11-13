@@ -1,78 +1,67 @@
 package com.example.product;
 
+import com.example.shop.domain.dto.ProductDTO;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
+import com.example.shop.domain.usecase.ValidationExecutor;
+import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.product.CreateProductUsecase;
-import com.example.shop.domain.dto.ProductDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Set;
+
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateProductUsecaseTest {
 
     private ProductRepository productRepository;
+    private ValidationExecutor<ProductDTO> validationExecutor;
     private CreateProductUsecase createProductUsecase;
 
     @BeforeEach
     void setUp() {
         productRepository = mock(ProductRepository.class);
-        createProductUsecase = new CreateProductUsecase(productRepository);
+        validationExecutor = mock(ValidationExecutor.class);
+        createProductUsecase = new CreateProductUsecase(productRepository, validationExecutor);
     }
 
     @Test
-    void givenValidDTO_whenCreateProduct_shouldCreateProductSuccessfully() {
+    void givenValidDTO_whenExecute_thenProductIsCreatedAndSaved() {
         ProductDTO dto = ProductDTO.builder()
                 .name("Laptop")
                 .price(1500.0)
                 .description("Gaming laptop")
                 .build();
 
-        Product saved = Product.builder()
-                .id(1)
-                .name("Laptop")
-                .price(1500.0)
-                .description("Gaming laptop")
-                .build();
-
-        when(productRepository.save(any(Product.class))).thenReturn(saved);
+        when(validationExecutor.validateAndThrow(dto)).thenReturn(Set.of());
+        when(productRepository.save(any(Product.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Product result = createProductUsecase.execute(dto);
 
         assertNotNull(result);
         assertEquals("Laptop", result.getName());
         assertEquals(1500.0, result.getPrice());
+        assertEquals("Gaming laptop", result.getDescription());
+
+        verify(validationExecutor, times(1)).validateAndThrow(dto);
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
     @Test
-    void givenInvalidDTO_whenCreateProduct_shouldThrowExceptionWhenDTOIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> createProductUsecase.execute(null));
-        verify(productRepository, never()).save(any());
-    }
-
-    @Test
-    void givenEmptyName_whenCreateProduct_shouldThrowExceptionWhenNameIsBlank() {
+    void givenInvalidDTO_whenExecute_thenThrowsValidationException() {
         ProductDTO dto = ProductDTO.builder()
-                .name(" ")
-                .price(100.0)
+                .name("")
+                .price(-100.0)
                 .description("desc")
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> createProductUsecase.execute(dto));
-        verify(productRepository, never()).save(any());
-    }
+        doThrow(new ValidationException(Set.of()))
+                .when(validationExecutor).validateAndThrow(dto);
 
-    @Test
-    void givenNegativePrice_whenCreateProduct_shouldThrowExceptionWhenPriceIsNegative() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Phone")
-                .price(-10.0)
-                .description("desc")
-                .build();
+        assertThrows(ValidationException.class, () -> createProductUsecase.execute(dto));
 
-        assertThrows(IllegalArgumentException.class, () -> createProductUsecase.execute(dto));
-        verify(productRepository, never()).save(any());
+        verify(productRepository, never()).save(any(Product.class));
     }
 }
