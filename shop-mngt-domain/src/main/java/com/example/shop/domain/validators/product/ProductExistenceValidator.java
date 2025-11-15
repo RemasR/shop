@@ -16,7 +16,7 @@ public class ProductExistenceValidator implements Validator<Integer> {
     }
 
     @Override
-    public Set<SimpleViolation> validate(Integer id) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(Integer id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (!productRepository.existsById(id)) {

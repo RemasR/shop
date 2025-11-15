@@ -18,7 +18,7 @@ public class CreateProductUsecase {
     public Product execute(ProductDTO dto) {
         validationExecutor.validateAndThrow(dto);
 
-        Product product = Product.builder()
+        Product product = Product.builder() //Maybe we should have a constructor that takes a dto and created a product
                 .id(0)
                 .name(dto.getName())
                 .price(dto.getPrice())

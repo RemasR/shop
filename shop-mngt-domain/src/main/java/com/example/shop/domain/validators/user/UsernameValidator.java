@@ -10,7 +10,7 @@ import java.util.Set;
 public class UsernameValidator implements Validator<User> {
 
     @Override
-    public Set<SimpleViolation> validate(User user) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(User user){
         Set<SimpleViolation> violations = new HashSet<>();
         if (user.getName() == null || user.getName().trim().isEmpty()) {
             violations.add(new SimpleViolation("user.name","Name cannot be null or empty"));

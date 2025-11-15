@@ -2,13 +2,11 @@ package com.example.productValidator;
 
 import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.entity.Product;
-import com.example.shop.domain.entity.User;
 import com.example.shop.domain.validators.product.ProductNameValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

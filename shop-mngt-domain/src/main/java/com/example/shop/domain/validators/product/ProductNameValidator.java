@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProductNameValidator implements Validator<Product> {
-    public Set<SimpleViolation> validate(Product product) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(Product product) {
         Set<SimpleViolation> violations = new HashSet<>();
         if (product.getName() == null || product.getName().trim().isEmpty()) {
             violations.add(new SimpleViolation("product.name", "Name cannot be null or empty"));

@@ -79,5 +79,9 @@ public class CreateUserUsecaseTest {
 
         verify(userRepository, never()).save(any(User.class));
     }
-
+/*
+ for(SimpleViolation vicontainsolation : violations){ // TODO: FIX ME
+            assert(violations_2.(violation));
+        }
+ */
 }

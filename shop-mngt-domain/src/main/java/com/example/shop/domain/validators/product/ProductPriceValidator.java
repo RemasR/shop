@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ProductPriceValidator implements Validator<Product> {
     @Override
-    public Set<SimpleViolation> validate(Product product) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(Product product) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (product == null) {

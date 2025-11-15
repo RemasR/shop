@@ -14,7 +14,6 @@ public class ValidationExecutor<T> {
 
     public ValidationExecutor(List<Validator<T>> validators) {
         this.validators.addAll(validators);
-
     }
 
     public Set<SimpleViolation> validateAndThrow(T target) {

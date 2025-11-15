@@ -21,7 +21,7 @@ public class UpdateUserUsecase {
     public User execute(UUID userId, UserDTO dto) {
         validationExecutor.validateAndThrow(dto);
 
-        if (!userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) { // this should be done in a validator, fix it later
             throw new RuntimeException("User not found");
         }
 

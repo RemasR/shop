@@ -10,7 +10,7 @@ import java.util.Set;
 public class PhonenumberValidator implements Validator<User> {
 
     @Override
-    public Set<SimpleViolation> validate(User user) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(User user) {
         Set<SimpleViolation> violations = new HashSet<>();
         if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
             violations.add(new SimpleViolation("user.phoneNumber", "Phone number cannot be null or empty"));

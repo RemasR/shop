@@ -17,7 +17,7 @@ public class UserExistenceValidator implements Validator<UUID> {
     }
 
     @Override
-    public Set<SimpleViolation> validate(UUID id) throws IllegalArgumentException {
+    public Set<SimpleViolation> validate(UUID id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (!userRepository.existsById(id)) {
