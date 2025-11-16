@@ -3,69 +3,63 @@ package com.example.shop.repository;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemoryUserRepository implements UserRepository {
 
-    private final Map<UUID, User> userStore = new HashMap<>();
-    private final Map<String, UUID> emailIndex = new HashMap<>();
+    private final List<User> users = new ArrayList<>();
 
     @Override
     public User save(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId().equals(user.getId())) {
+                users.set(i, user);
+                return user;
+            }
         }
 
-        UUID existingUserId = emailIndex.get(user.getEmail());
-        if (existingUserId != null && !existingUserId.equals(user.getId())) {
-            throw new IllegalStateException("Email already exists for another user");
-        }
-
-        userStore.put(user.getId(), user);
-        emailIndex.put(user.getEmail(), user.getId());
+        users.add(user);
         return user;
     }
 
     @Override
-    public User findById(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID cannot be null");
+    public User findById(String id) {
+        for (User u : users) {
+            if (u.getId().equals(id)) {
+                return u;
+            }
         }
-        return userStore.get(id);
+        return null;
     }
 
     @Override
     public User findByEmail(String email) {
-        if (email == null) {
-            throw new IllegalArgumentException("Email cannot be null");
+        for (User u : users) {
+            if (u.getEmail().equals(email)) {
+                return u;
+            }
         }
-        UUID userId = emailIndex.get(email);
-        if(userId != null)
-            return userStore.get(userId);
-        else return null;
+        return null;
     }
 
     @Override
     public List<User> findAllUsers() {
-        return new ArrayList<>(userStore.values());
+        return new ArrayList<>(users);
     }
 
     @Override
-    public void deleteById(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID cannot be null");
-        }
-        User user = userStore.remove(id);
-        if (user != null) {
-            emailIndex.remove(user.getEmail());
-        }
+    public void deleteById(String id) {
+        users.removeIf(user -> user.getId().equals(id));
     }
 
     @Override
-    public boolean existsById(UUID id) {
-        if (id == null) {
-            return false;
+    public boolean existsById(String id) {
+        for (User u : users) {
+            if (u.getId().equals(id)) {
+                return true;
+            }
         }
-        return userStore.containsKey(id);
+        return false;
     }
 }
