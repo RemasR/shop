@@ -1,5 +1,6 @@
 package com.example.shop.domain.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,12 +9,9 @@ import java.util.UUID;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class OrderDTO {
     private UUID userId;
     private List<OrderItemDTO> items;
 
-    public OrderDTO(UUID userId, List<OrderItemDTO> items) {
-        this.userId = userId;
-        this.items = items;
-    }
 }
