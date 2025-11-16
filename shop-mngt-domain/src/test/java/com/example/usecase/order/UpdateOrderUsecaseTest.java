@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class UpdateOrderUsecaseTest {
 
     private OrderRepository orderRepository;
-    private ValidationExecutor<Integer> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private UpdateOrderUsecase updateOrderUsecase;
 
     @BeforeEach
@@ -32,7 +32,7 @@ public class UpdateOrderUsecaseTest {
 
     @Test
     void givenValidOrder_whenUpdateStatus_thenStatusIsUpdated() {
-        int orderId = 1;
+        String orderId = UUID.randomUUID().toString();
         User user = new User(UUID.randomUUID().toString(), "Raslan", "raslan@test.com", "+962791234567");
         Order order = Order.builder()
                 .id(orderId)
@@ -55,7 +55,7 @@ public class UpdateOrderUsecaseTest {
 
     @Test
     void givenInvalidOrderId_whenUpdate_thenThrowsValidationException() {
-        int orderId = 999;
+        String orderId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(orderId))
                 .thenThrow(new ValidationException(Set.of()));

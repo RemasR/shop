@@ -7,7 +7,7 @@ import com.example.shop.domain.validators.Validator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OrderExistenceValidator implements Validator<Integer> {
+public class OrderExistenceValidator implements Validator<String> {
 
     private final OrderRepository orderRepository;
 
@@ -16,7 +16,7 @@ public class OrderExistenceValidator implements Validator<Integer> {
     }
 
     @Override
-    public Set<SimpleViolation> validate(Integer id) {
+    public Set<SimpleViolation> validate(String id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (!orderRepository.existsById(id)) {

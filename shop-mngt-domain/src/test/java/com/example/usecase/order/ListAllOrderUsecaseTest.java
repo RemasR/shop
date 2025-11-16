@@ -31,10 +31,20 @@ public class ListAllOrderUsecaseTest {
         User user1 = new User(UUID.randomUUID().toString(), "Remas", "remas@test.com", "+962791234567");
         User user2 = new User(UUID.randomUUID().toString(), "Hamza", "hamza@test.com", "+962791234568");
 
-        Order order1 = Order.builder().id(1).user(user1).items(new ArrayList<>())
-                .totalPrice(100.0).status(OrderStatus.PENDING).build();
-        Order order2 = Order.builder().id(2).user(user2).items(new ArrayList<>())
-                .totalPrice(200.0).status(OrderStatus.CONFIRMED).build();
+        Order order1 = Order.builder()
+                .id(UUID.randomUUID().toString())
+                .user(user1)
+                .items(new ArrayList<>())
+                .totalPrice(100.0)
+                .status(OrderStatus.PENDING)
+                .build();
+        Order order2 = Order.builder()
+                .id(UUID.randomUUID().toString())
+                .user(user2)
+                .items(new ArrayList<>())
+                .totalPrice(200.0)
+                .status(OrderStatus.CONFIRMED)
+                .build();
 
         List<Order> orders = List.of(order1, order2);
 

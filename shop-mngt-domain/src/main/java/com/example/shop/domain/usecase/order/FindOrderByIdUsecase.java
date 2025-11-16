@@ -7,14 +7,14 @@ import com.example.shop.domain.usecase.ValidationExecutor;
 public class FindOrderByIdUsecase {
 
     private final OrderRepository orderRepository;
-    private final ValidationExecutor<Integer> validationExecutor;
+    private final ValidationExecutor<String> validationExecutor;
 
-    public FindOrderByIdUsecase(OrderRepository orderRepository, ValidationExecutor<Integer> validationExecutor) {
+    public FindOrderByIdUsecase(OrderRepository orderRepository, ValidationExecutor<String> validationExecutor) {
         this.orderRepository = orderRepository;
         this.validationExecutor = validationExecutor;
     }
 
-    public Order execute(int id) {
+    public Order execute(String id) {
         validationExecutor.validateAndThrow(id);
         return orderRepository.findById(id);
     }

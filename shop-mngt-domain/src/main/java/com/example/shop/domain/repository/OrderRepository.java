@@ -8,7 +8,7 @@ public interface OrderRepository {
 
     Order save(Order orders);
 
-    Order findById(int id);
+    Order findById(String id);
 
     List<Order> findAllOrders();
 
@@ -16,7 +16,7 @@ public interface OrderRepository {
 
     List<Order> findByStatus(OrderStatus status);
 
-    void deleteById(int id);
+    void deleteById(String id);
 
-    boolean existsById(int id);
+    boolean existsById(String id);
 }

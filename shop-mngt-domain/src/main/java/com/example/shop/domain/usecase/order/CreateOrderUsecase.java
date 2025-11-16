@@ -8,6 +8,7 @@ import com.example.shop.domain.usecase.ValidationExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateOrderUsecase {
 
@@ -42,7 +43,7 @@ public class CreateOrderUsecase {
         }
 
         Order order = Order.builder()
-                .id(0)
+                .id(UUID.randomUUID().toString())
                 .user(user)
                 .items(orderItems)
                 .totalPrice(totalPrice)

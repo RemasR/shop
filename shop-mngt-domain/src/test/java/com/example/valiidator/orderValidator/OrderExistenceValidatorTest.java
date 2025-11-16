@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,7 +25,7 @@ public class OrderExistenceValidatorTest {
 
     @Test
     void givenExistingOrderId_whenValidate_thenNoViolations() {
-        int id = 1;
+        String id = UUID.randomUUID().toString();
         when(orderRepository.existsById(id)).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(id);
@@ -34,7 +35,7 @@ public class OrderExistenceValidatorTest {
 
     @Test
     void givenNonExistingOrderId_whenValidate_thenReturnsViolation() {
-        int id = 999;
+        String id = UUID.randomUUID().toString();
         when(orderRepository.existsById(id)).thenReturn(false);
 
         Set<SimpleViolation> violations = validator.validate(id);

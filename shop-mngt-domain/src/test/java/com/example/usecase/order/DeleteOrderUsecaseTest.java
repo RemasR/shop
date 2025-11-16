@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class DeleteOrderUsecaseTest {
 
     private OrderRepository orderRepository;
-    private ValidationExecutor<Integer> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private DeleteOrderUsecase deleteOrderUsecase;
 
     @BeforeEach
@@ -27,7 +28,7 @@ public class DeleteOrderUsecaseTest {
 
     @Test
     void givenValidOrderId_whenExecute_thenOrderIsDeleted() {
-        int orderId = 1;
+        String orderId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(orderId)).thenReturn(Set.of());
 
@@ -39,13 +40,13 @@ public class DeleteOrderUsecaseTest {
 
     @Test
     void givenInvalidOrderId_whenExecute_thenThrowsValidationException() {
-        int orderId = 999;
+        String orderId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(orderId))
                 .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> deleteOrderUsecase.execute(orderId));
 
-        verify(orderRepository, never()).deleteById(anyInt());
+        verify(orderRepository, never()).deleteById(anyString());
     }
 }

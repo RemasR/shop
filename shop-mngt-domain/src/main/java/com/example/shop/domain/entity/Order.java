@@ -10,7 +10,7 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 public class Order {
-    private final int id;
+    private String id;
     private final User user;
     private List<OrderItem> items;
     private double totalPrice;
