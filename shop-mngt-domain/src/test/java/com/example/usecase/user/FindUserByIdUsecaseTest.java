@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FindUserByIdUsecaseTest {
 
     private UserRepository userRepository;
-    private ValidationExecutor<UUID> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private FindUserByIdUsecase findUserByIdUsecase;
 
     @BeforeEach
@@ -29,7 +29,7 @@ public class FindUserByIdUsecaseTest {
 
     @Test
     void givenValidUserId_whenFindById_thenReturnsUser() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User expectedUser = new User(userId, "Khalid", "khalid@test.com", "+962794128940");
 
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
@@ -49,7 +49,7 @@ public class FindUserByIdUsecaseTest {
 
     @Test
     void givenInvalidUserId_whenFindById_thenThrowsValidationException() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(userId))
                 .thenThrow(new ValidationException(Set.of()));

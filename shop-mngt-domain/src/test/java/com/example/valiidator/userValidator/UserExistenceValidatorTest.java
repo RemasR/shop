@@ -22,10 +22,9 @@ public class UserExistenceValidatorTest {
         userRepository = mock(UserRepository.class);
         validator = new UserExistenceValidator(userRepository);
     }
-
     @Test
     void givenExistingUserId_whenValidate_thenNoViolations() {
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         when(userRepository.existsById(id)).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(id);
@@ -35,7 +34,7 @@ public class UserExistenceValidatorTest {
 
     @Test
     void givenNonExistingUserId_whenValidate_thenReturnsViolation() {
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         when(userRepository.existsById(id)).thenReturn(false);
 
         Set<SimpleViolation> violations = validator.validate(id);

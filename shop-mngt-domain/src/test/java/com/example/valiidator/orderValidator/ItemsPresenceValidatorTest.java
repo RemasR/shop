@@ -32,7 +32,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenValidOrderDTO_whenValidate_thenNoViolations() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderItemDTO item = new OrderItemDTO(1, 2);
         List<OrderItemDTO> items = List.of(item);
 
@@ -67,7 +67,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenNonExistingUser_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderItemDTO item = new OrderItemDTO(1, 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
@@ -86,7 +86,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenNullItems_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(null)
@@ -104,7 +104,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenEmptyItems_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(new ArrayList<>())
@@ -122,7 +122,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenNonExistingProduct_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderItemDTO item = new OrderItemDTO(999, 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
@@ -142,7 +142,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenZeroQuantity_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderItemDTO item = new OrderItemDTO(1, 0);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
@@ -162,7 +162,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenNegativeQuantity_whenValidate_thenReturnsViolation() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         OrderItemDTO item = new OrderItemDTO(1, -5);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)

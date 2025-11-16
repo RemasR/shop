@@ -21,8 +21,7 @@ public class UserIdValidatorTest {
 
     @Test
     void givenNonNullId_whenValidate_thenNoViolations() {
-        UUID id = UUID.randomUUID();
-
+        String id = UUID.randomUUID().toString();
         Set<SimpleViolation> violations = validator.validate(id);
 
         assertTrue(violations.isEmpty());

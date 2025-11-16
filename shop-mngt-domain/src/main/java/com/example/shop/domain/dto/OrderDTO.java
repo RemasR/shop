@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class OrderDTO {
-    private UUID userId;
+    private String userId;
     private List<OrderItemDTO> items;
 
 }

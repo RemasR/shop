@@ -38,7 +38,7 @@ public class CreateOrderUsecaseTest {
 
     @Test
     void givenValidOrderDTO_whenExecute_thenOrderIsCreated() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Product product = Product.builder()
@@ -73,7 +73,7 @@ public class CreateOrderUsecaseTest {
 
     @Test
     void givenMultipleItems_whenExecute_thenCalculatesTotalCorrectly() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Product product1 = Product.builder().id(1).name("Laptop").price(1000.0).build();

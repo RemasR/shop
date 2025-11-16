@@ -27,9 +27,9 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void givenValidUsers_whenListAllUsers_thenReturnsAllUsers() {
-        User user1 = new User(UUID.randomUUID(), "Alice", "alice@test.com", "+962791111111");
-        User user2 = new User(UUID.randomUUID(), "Bob", "bob@test.com", "+962792222222");
-        User user3 = new User(UUID.randomUUID(), "Charlie", "charlie@test.com", "+962793333333");
+        User user1 = new User(UUID.randomUUID().toString(), "Alice", "alice@test.com", "+962791111111");
+        User user2 = new User(UUID.randomUUID().toString(), "Bob", "bob@test.com", "+962792222222");
+        User user3 = new User(UUID.randomUUID().toString(), "Charlie", "charlie@test.com", "+962793333333");
 
         List<User> expectedUsers = Arrays.asList(user1, user2, user3);
 
@@ -60,7 +60,7 @@ public class ListAllUserUsecaseTest {
 
     @Test
     void givenListWithSingleUser_whenListAllUsers_thenReturnsSingletonList() {
-        User user = new User(UUID.randomUUID(), "John", "john@test.com", "+962794444444");
+        User user = new User(UUID.randomUUID().toString(), "John", "john@test.com", "+962794444444");
         when(userRepository.findAllUsers()).thenReturn(Collections.singletonList(user));
 
         List<User> result = listAllUserUsecase.execute();

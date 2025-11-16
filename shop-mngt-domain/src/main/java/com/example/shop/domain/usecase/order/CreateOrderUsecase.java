@@ -29,7 +29,7 @@ public class CreateOrderUsecase {
     public Order execute(OrderDTO dto) {
         validationExecutor.validateAndThrow(dto);
 
-        User user = userRepository.findById(dto.getUserId());
+        User user = userRepository.findById(dto.getUserId().toString());
 
         List<OrderItem> orderItems = new ArrayList<>();
         double totalPrice = 0.0;

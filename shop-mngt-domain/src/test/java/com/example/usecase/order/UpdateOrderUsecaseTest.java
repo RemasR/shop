@@ -33,7 +33,7 @@ public class UpdateOrderUsecaseTest {
     @Test
     void givenValidOrder_whenUpdateStatus_thenStatusIsUpdated() {
         int orderId = 1;
-        User user = new User(UUID.randomUUID(), "Raslan", "raslan@test.com", "+962791234567");
+        User user = new User(UUID.randomUUID().toString(), "Raslan", "raslan@test.com", "+962791234567");
         Order order = Order.builder()
                 .id(orderId)
                 .user(user)

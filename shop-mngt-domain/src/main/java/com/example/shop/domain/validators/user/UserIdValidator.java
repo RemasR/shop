@@ -5,12 +5,11 @@ import com.example.shop.domain.validators.Validator;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-public class UserIdValidator implements Validator<UUID> {
+public class UserIdValidator implements Validator<String> {
 
     @Override
-    public Set<SimpleViolation> validate(UUID id) {
+    public Set<SimpleViolation> validate(String id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (id == null) {

@@ -6,9 +6,8 @@ import com.example.shop.domain.validators.Validator;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-public class UserExistenceValidator implements Validator<UUID> {
+public class UserExistenceValidator implements Validator<String> {
 
     private final UserRepository userRepository;
 
@@ -17,7 +16,7 @@ public class UserExistenceValidator implements Validator<UUID> {
     }
 
     @Override
-    public Set<SimpleViolation> validate(UUID id) {
+    public Set<SimpleViolation> validate(String id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (!userRepository.existsById(id)) {

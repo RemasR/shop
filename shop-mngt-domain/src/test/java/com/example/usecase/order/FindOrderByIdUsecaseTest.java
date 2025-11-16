@@ -33,7 +33,7 @@ public class FindOrderByIdUsecaseTest {
     @Test
     void givenValidOrderId_whenExecute_thenReturnsOrder() {
         int orderId = 1;
-        User user = new User(UUID.randomUUID(), "Ahmad", "ahmad@test.com", "+962791234567");
+        User user = new User(UUID.randomUUID().toString(), "Ahmad", "ahmad@test.com", "+962791234567");
         Order order = Order.builder()
                 .id(orderId)
                 .user(user)

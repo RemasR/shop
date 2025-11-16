@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeleteUserUsecaseTest {
 
     private UserRepository userRepository;
-    private ValidationExecutor<UUID> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private DeleteUserUsecase deleteUserUsecase;
 
     @BeforeEach
@@ -28,7 +28,7 @@ public class DeleteUserUsecaseTest {
 
     @Test
     void givenValidId_whenExecute_thenDeletesUser() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
 
@@ -40,7 +40,7 @@ public class DeleteUserUsecaseTest {
 
     @Test
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
 
         when(validationExecutor.validateAndThrow(userId))
                 .thenThrow(new ValidationException(Set.of()));

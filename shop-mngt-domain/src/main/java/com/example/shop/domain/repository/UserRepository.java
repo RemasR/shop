@@ -7,13 +7,13 @@ public interface UserRepository {
 
     User save(User user);
 
-    User findById(UUID id);
+    User findById(String id);
 
     User findByEmail(String email);
 
     List<User> findAllUsers();
 
-    void deleteById(UUID id);
+    void deleteById(String id);
 
-    boolean existsById(UUID id);
+    boolean existsById(String id);
 }

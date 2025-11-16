@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class UpdateUserUsecaseTest {
 
     private UserRepository userRepository;
-    private ValidationExecutor<UUID> existenceValidator;
+    private ValidationExecutor<String> existenceValidator;
     private ValidationExecutor<User> userValidator;
     private UpdateUserUsecase updateUserUsecase;
 
@@ -33,7 +33,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenExistingUser_whenUpdateName_thenNameIsUpdated() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User existingUser = new User(userId, "OldName", "email@test.com", "+962791234567");
 
         when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
@@ -56,7 +56,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenExistingUser_whenUpdateEmail_thenEmailIsUpdated() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User existingUser = new User(userId, "Khalid", "old@test.com", "+962791234567");
 
         when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
@@ -79,7 +79,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenExistingUser_whenUpdatePhoneNumber_thenPhoneIsUpdated() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User existingUser = new User(userId, "Khalid", "email@test.com", "+962791111111");
 
         when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
@@ -102,7 +102,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenNonExistingUser_whenUpdate_thenThrowsValidationException() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         UserDTO dto = new UserDTO("NewName", null, null);
 
         when(existenceValidator.validateAndThrow(userId))
@@ -126,7 +126,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenInvalidUpdatedUser_whenUpdate_thenThrowsValidationException() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User existingUser = new User(userId, "OldName", "old@test.com", "+962791234567");
         UserDTO dto = new UserDTO("ab", "invalid-email", null);
 
@@ -154,7 +154,7 @@ public class UpdateUserUsecaseTest {
 
     @Test
     void givenExistingUser_whenUpdateAllFields_thenAllFieldsAreUpdated() {
-        UUID userId = UUID.randomUUID();
+        String userId = UUID.randomUUID().toString();
         User existingUser = new User(userId, "OldName", "old@test.com", "+962791111111");
 
         when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());

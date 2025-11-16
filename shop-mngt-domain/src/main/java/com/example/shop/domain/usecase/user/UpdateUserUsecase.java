@@ -6,23 +6,21 @@ import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.validators.user.*;
 
-import java.util.UUID;
-
 public class UpdateUserUsecase {
 
     private final UserRepository userRepository;
-    private final ValidationExecutor<UUID> existenceValidationExecutor;
+    private final ValidationExecutor<String> existenceValidationExecutor;
     private final ValidationExecutor<User> userValidationExecutor;
 
     public UpdateUserUsecase(UserRepository userRepository,
-                             ValidationExecutor<UUID> existenceValidationExecutor,
+                             ValidationExecutor<String> existenceValidationExecutor,
                              ValidationExecutor<User> userValidationExecutor) {
         this.userRepository = userRepository;
         this.existenceValidationExecutor = existenceValidationExecutor;
         this.userValidationExecutor = userValidationExecutor;
     }
-
-    public User execute(UUID userId, UserDTO dto) {
+    //string id
+    public User execute(String userId, UserDTO dto) {
         existenceValidationExecutor.validateAndThrow(userId);
 
         User existingUser = userRepository.findById(userId);

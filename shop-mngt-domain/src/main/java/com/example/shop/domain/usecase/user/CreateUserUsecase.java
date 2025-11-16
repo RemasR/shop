@@ -20,7 +20,7 @@ import java.util.UUID;
             validationExecutor.validateAndThrow(dto);
 
             User user = new User(
-                    UUID.randomUUID(),
+                    UUID.randomUUID().toString(),
                     dto.getName(),
                     dto.getEmail(),
                     dto.getPhoneNumber()
