@@ -5,6 +5,8 @@ import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 
+import java.util.UUID;
+
 public class CreateProductUsecase {
 
     private final ProductRepository productRepository;
@@ -19,7 +21,7 @@ public class CreateProductUsecase {
         validationExecutor.validateAndThrow(dto);
 
         Product product = Product.builder()
-                .id("0")
+                .id(UUID.randomUUID().toString())
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
