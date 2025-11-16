@@ -9,7 +9,7 @@ import java.util.*;
 
 public class MemoryOrderRepository implements OrderRepository {
 
-    private final Map<Integer, Order> orderStore = new HashMap<>();
+    private final Map<String, Order> orderStore = new HashMap<>();
 
     @Override
     public Order save(Order order) {
@@ -21,7 +21,7 @@ public class MemoryOrderRepository implements OrderRepository {
     }
 
     @Override
-    public Order findById(int id) {
+    public Order findById(String id) {
         return orderStore.get(id);
     }
 
@@ -61,12 +61,12 @@ public class MemoryOrderRepository implements OrderRepository {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(String id) {
         orderStore.remove(id);
     }
 
     @Override
-    public boolean existsById(int id) {
+    public boolean existsById(String id) {
         return orderStore.containsKey(id);
     }
 }
