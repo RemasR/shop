@@ -25,14 +25,14 @@ public class ListAllProductUsecaseTest {
     @Test
     void givenProductsExist_whenExecute_shouldReturnAllProducts() {
         Product p1 = Product.builder()
-                .id(1)
+                .id("1")
                 .name("Laptop")
                 .price(1500.0)
                 .description("Gaming laptop")
                 .build();
 
         Product p2 = Product.builder()
-                .id(2)
+                .id("2")
                 .name("Phone")
                 .price(700.0)
                 .description("Smartphone")

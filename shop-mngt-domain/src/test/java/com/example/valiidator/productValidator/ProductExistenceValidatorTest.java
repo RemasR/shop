@@ -24,7 +24,7 @@ public class ProductExistenceValidatorTest {
 
     @Test
     void givenExistingUserId_whenValidate_thenNoViolations() {
-        int id = 1;
+        String id = "1";
         when(productRepository.existsById(id)).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(id);
@@ -34,7 +34,7 @@ public class ProductExistenceValidatorTest {
 
     @Test
     void givenNonExistingUserId_whenValidate_thenReturnsViolation() {
-        int id = -55;
+        String id = "-55";
         when(productRepository.existsById(id)).thenReturn(false);
 
         Set<SimpleViolation> violations = validator.validate(id);

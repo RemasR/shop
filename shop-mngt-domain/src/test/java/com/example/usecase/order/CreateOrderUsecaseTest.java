@@ -42,13 +42,13 @@ public class CreateOrderUsecaseTest {
         User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Product product = Product.builder()
-                .id(1)
+                .id("1")
                 .name("Laptop")
                 .price(1000.0)
                 .description("Gaming laptop")
                 .build();
 
-        OrderItemDTO itemDTO = new OrderItemDTO(1, 2);
+        OrderItemDTO itemDTO = new OrderItemDTO("1", 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(itemDTO))
@@ -56,7 +56,7 @@ public class CreateOrderUsecaseTest {
 
         when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(user);
-        when(productRepository.findById(1)).thenReturn(product);
+        when(productRepository.findById("1")).thenReturn(product);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Order result = createOrderUsecase.execute(orderDTO);
@@ -76,11 +76,11 @@ public class CreateOrderUsecaseTest {
         String userId = UUID.randomUUID().toString();
         User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
-        Product product1 = Product.builder().id(1).name("Laptop").price(1000.0).build();
-        Product product2 = Product.builder().id(2).name("Mouse").price(50.0).build();
+        Product product1 = Product.builder().id("1").name("Laptop").price(1000.0).build();
+        Product product2 = Product.builder().id("2").name("Mouse").price(50.0).build();
 
-        OrderItemDTO item1 = new OrderItemDTO(1, 2);
-        OrderItemDTO item2 = new OrderItemDTO(2, 3);
+        OrderItemDTO item1 = new OrderItemDTO("1", 2);
+        OrderItemDTO item2 = new OrderItemDTO("2", 3);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(item1, item2))
@@ -88,8 +88,8 @@ public class CreateOrderUsecaseTest {
 
         when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(user);
-        when(productRepository.findById(1)).thenReturn(product1);
-        when(productRepository.findById(2)).thenReturn(product2);
+        when(productRepository.findById("1")).thenReturn(product1);
+        when(productRepository.findById("2")).thenReturn(product2);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Order result = createOrderUsecase.execute(orderDTO);

@@ -19,7 +19,6 @@ public class UpdateUserUsecase {
         this.existenceValidationExecutor = existenceValidationExecutor;
         this.userValidationExecutor = userValidationExecutor;
     }
-    //string id
     public User execute(String userId, UserDTO dto) {
         existenceValidationExecutor.validateAndThrow(userId);
 

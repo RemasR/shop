@@ -33,7 +33,7 @@ public class ItemsPresenceValidatorTest {
     @Test
     void givenValidOrderDTO_whenValidate_thenNoViolations() {
         String userId = UUID.randomUUID().toString();
-        OrderItemDTO item = new OrderItemDTO(1, 2);
+        OrderItemDTO item = new OrderItemDTO("1", 2);
         List<OrderItemDTO> items = List.of(item);
 
         OrderDTO orderDTO = OrderDTO.builder()
@@ -42,7 +42,7 @@ public class ItemsPresenceValidatorTest {
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(productRepository.existsById(1)).thenReturn(true);
+        when(productRepository.existsById("1")).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(orderDTO);
 
@@ -51,7 +51,7 @@ public class ItemsPresenceValidatorTest {
 
     @Test
     void givenNullUserId_whenValidate_thenReturnsViolation() {
-        OrderItemDTO item = new OrderItemDTO(1, 2);
+        OrderItemDTO item = new OrderItemDTO("1", 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(null)
                 .items(List.of(item))
@@ -68,7 +68,7 @@ public class ItemsPresenceValidatorTest {
     @Test
     void givenNonExistingUser_whenValidate_thenReturnsViolation() {
         String userId = UUID.randomUUID().toString();
-        OrderItemDTO item = new OrderItemDTO(1, 2);
+        OrderItemDTO item = new OrderItemDTO("1", 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(item))
@@ -123,14 +123,14 @@ public class ItemsPresenceValidatorTest {
     @Test
     void givenNonExistingProduct_whenValidate_thenReturnsViolation() {
         String userId = UUID.randomUUID().toString();
-        OrderItemDTO item = new OrderItemDTO(999, 2);
+        OrderItemDTO item = new OrderItemDTO("999", 2);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(item))
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(productRepository.existsById(999)).thenReturn(false);
+        when(productRepository.existsById("999")).thenReturn(false);
 
         Set<SimpleViolation> violations = validator.validate(orderDTO);
 
@@ -143,14 +143,14 @@ public class ItemsPresenceValidatorTest {
     @Test
     void givenZeroQuantity_whenValidate_thenReturnsViolation() {
         String userId = UUID.randomUUID().toString();
-        OrderItemDTO item = new OrderItemDTO(1, 0);
+        OrderItemDTO item = new OrderItemDTO("1", 0);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(item))
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(productRepository.existsById(1)).thenReturn(true);
+        when(productRepository.existsById("1")).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(orderDTO);
 
@@ -163,14 +163,14 @@ public class ItemsPresenceValidatorTest {
     @Test
     void givenNegativeQuantity_whenValidate_thenReturnsViolation() {
         String userId = UUID.randomUUID().toString();
-        OrderItemDTO item = new OrderItemDTO(1, -5);
+        OrderItemDTO item = new OrderItemDTO("1", -5);
         OrderDTO orderDTO = OrderDTO.builder()
                 .userId(userId)
                 .items(List.of(item))
                 .build();
 
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(productRepository.existsById(1)).thenReturn(true);
+        when(productRepository.existsById("1")).thenReturn(true);
 
         Set<SimpleViolation> violations = validator.validate(orderDTO);
 

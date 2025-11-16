@@ -7,7 +7,7 @@ import com.example.shop.domain.validators.Validator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProductExistenceValidator implements Validator<Integer> {
+public class ProductExistenceValidator implements Validator<String> {
 
     private final ProductRepository productRepository;
 
@@ -16,7 +16,7 @@ public class ProductExistenceValidator implements Validator<Integer> {
     }
 
     @Override
-    public Set<SimpleViolation> validate(Integer id) {
+    public Set<SimpleViolation> validate(String id) {
         Set<SimpleViolation> violations = new HashSet<>();
 
         if (!productRepository.existsById(id)) {

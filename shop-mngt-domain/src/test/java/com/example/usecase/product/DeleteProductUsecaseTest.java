@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeleteProductUsecaseTest {
 
     private ProductRepository productRepository;
-    private ValidationExecutor<Integer> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private DeleteProductUsecase deleteProductUsecase;
 
     @BeforeEach
@@ -27,7 +27,7 @@ public class DeleteProductUsecaseTest {
 
     @Test
     void givenValidId_whenExecute_thenProductIsDeleted() {
-        int productId = 1;
+        String productId = "1";
 
         when(validationExecutor.validateAndThrow(productId)).thenReturn(Set.of());
 
@@ -39,13 +39,13 @@ public class DeleteProductUsecaseTest {
 
     @Test
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
-        int invalidId = -1;
+        String invalidId = "-1";
 
         when(validationExecutor.validateAndThrow(invalidId))
                 .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> deleteProductUsecase.execute(invalidId));
 
-        verify(productRepository, never()).deleteById(anyInt());
+        verify(productRepository, never()).deleteById(anyString());
     }
 }

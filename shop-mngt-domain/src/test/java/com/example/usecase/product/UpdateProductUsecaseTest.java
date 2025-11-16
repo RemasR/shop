@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UpdateProductUsecaseTest {
 
     private ProductRepository productRepository;
-    private ValidationExecutor<Integer> idValidator;
+    private ValidationExecutor<String> idValidator;
     private ValidationExecutor<Product> productValidator;
     private UpdateProductUsecase updateProductUsecase;
 
@@ -31,7 +31,7 @@ public class UpdateProductUsecaseTest {
 
     @Test
     void givenValidDTO_whenExecute_thenProductIsUpdatedAndSaved() {
-        int productId = 1;
+        String productId = "1";
 
         Product existing = Product.builder()
                 .id(productId)
@@ -64,7 +64,7 @@ public class UpdateProductUsecaseTest {
 
     @Test
     void givenInvalidDTO_whenExecute_thenThrowsValidationException() {
-        int productId = 2;
+        String productId = "2";
 
         Product existing = Product.builder()
                 .id(productId)

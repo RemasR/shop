@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FindProductByIdUsecaseTest {
 
     private ProductRepository productRepository;
-    private ValidationExecutor<Integer> validationExecutor;
+    private ValidationExecutor<String> validationExecutor;
     private FindProductByIdUsecase findProductByIdUsecase;
 
     @BeforeEach
@@ -28,7 +28,7 @@ public class FindProductByIdUsecaseTest {
 
     @Test
     void givenValidId_whenExecute_thenReturnsProduct() {
-        int productId = 1;
+        String productId = "1";
 
         Product product = Product.builder()
                 .id(productId)
@@ -49,13 +49,13 @@ public class FindProductByIdUsecaseTest {
 
     @Test
     void givenInvalidId_whenExecute_thenThrowsValidationException() {
-        int invalidId = -1;
+        String invalidId = "-1";
 
         when(validationExecutor.validateAndThrow(invalidId))
                 .thenThrow(new ValidationException(Set.of()));
 
         assertThrows(ValidationException.class, () -> findProductByIdUsecase.execute(invalidId));
 
-        verify(productRepository, never()).findById(anyInt());
+        verify(productRepository, never()).findById(anyString());
     }
 }

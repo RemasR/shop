@@ -8,11 +8,11 @@ public interface ProductRepository {
 
     Product save(Product product);
 
-    Product findById(int id);
+    Product findById(String id);
 
     List<Product> findAllProducts();
 
-    Product deleteById(Integer id);
+    Product deleteById(String id);
 
-    boolean existsById(int id);
+    boolean existsById(String id);
 }

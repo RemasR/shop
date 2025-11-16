@@ -7,7 +7,7 @@ import java.util.*;
 
 public class MemoryProductRepository implements ProductRepository {
 
-    private final Map<Integer, Product> productStore = new HashMap<>();
+    private final Map<String, Product> productStore = new HashMap<>();
 
     @Override
     public Product save(Product product) {
@@ -19,7 +19,7 @@ public class MemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product findById(int id) {
+    public Product findById(String id) {
         return productStore.get(id);
     }
 
@@ -29,13 +29,13 @@ public class MemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product deleteById(Integer id) {
+    public Product deleteById(String id) {
         productStore.remove(id);
         return null;
     }
 
     @Override
-    public boolean existsById(int id) {
+    public boolean existsById(String id) {
         return productStore.containsKey(id);
     }
 }

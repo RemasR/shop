@@ -19,7 +19,7 @@ public class CreateProductUsecase {
         validationExecutor.validateAndThrow(dto);
 
         Product product = Product.builder()
-                .id(0)
+                .id("0")
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .description(dto.getDescription())

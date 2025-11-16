@@ -8,18 +8,18 @@ import com.example.shop.domain.usecase.ValidationExecutor;
 public class UpdateProductUsecase {
 
     private final ProductRepository productRepository;
-    private final ValidationExecutor<Integer> existenceValidationExecutor;
+    private final ValidationExecutor<String> existenceValidationExecutor;
     private final ValidationExecutor<Product> productValidationExecutor;
 
     public UpdateProductUsecase(ProductRepository productRepository,
-                                ValidationExecutor<Integer> existenceValidationExecutor,
+                                ValidationExecutor<String> existenceValidationExecutor,
                                 ValidationExecutor<Product> productValidationExecutor) {
         this.productRepository = productRepository;
         this.existenceValidationExecutor = existenceValidationExecutor;
         this.productValidationExecutor = productValidationExecutor;
     }
 
-    public Product execute(int id, ProductDTO dto) {
+    public Product execute(String id, ProductDTO dto) {
         existenceValidationExecutor.validateAndThrow(id);
 
         Product existing = productRepository.findById(id);
