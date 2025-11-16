@@ -12,7 +12,7 @@ public class UpdateProductUsecase {
     private final ValidationExecutor<Product> productValidationExecutor;
 
     public UpdateProductUsecase(ProductRepository productRepository,
-                                ValidationExecutor<Integer> existenceValidationExecutor, //Are these supposed to be sent with the constructor? or
+                                ValidationExecutor<Integer> existenceValidationExecutor,
                                 ValidationExecutor<Product> productValidationExecutor) {
         this.productRepository = productRepository;
         this.existenceValidationExecutor = existenceValidationExecutor;

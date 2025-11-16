@@ -19,14 +19,16 @@ import static org.mockito.Mockito.*;
 public class UpdateUserUsecaseTest {
 
     private UserRepository userRepository;
-    private ValidationExecutor<UserDTO> validationExecutor;
+    private ValidationExecutor<UUID> existenceValidator;
+    private ValidationExecutor<User> userValidator;
     private UpdateUserUsecase updateUserUsecase;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        validationExecutor = mock(ValidationExecutor.class);
-        updateUserUsecase = new UpdateUserUsecase(userRepository, validationExecutor);
+        existenceValidator = mock(ValidationExecutor.class);
+        userValidator = mock(ValidationExecutor.class);
+        updateUserUsecase = new UpdateUserUsecase(userRepository, existenceValidator, userValidator);
     }
 
     @Test
@@ -34,9 +36,8 @@ public class UpdateUserUsecaseTest {
         UUID userId = UUID.randomUUID();
         User existingUser = new User(userId, "OldName", "email@test.com", "+962791234567");
 
-        when(validationExecutor.validateAndThrow(any(UserDTO.class))).thenReturn(Set.of());
-
-        when(userRepository.existsById(userId)).thenReturn(true);
+        when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
+        when(userValidator.validateAndThrow(any(User.class))).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -47,8 +48,8 @@ public class UpdateUserUsecaseTest {
         assertEquals("email@test.com", result.getEmail());
         assertEquals("+962791234567", result.getPhoneNumber());
 
-        verify(validationExecutor, times(1)).validateAndThrow(dto);
-        verify(userRepository, times(1)).existsById(userId);
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userValidator, times(1)).validateAndThrow(existingUser);
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(existingUser);
     }
@@ -58,9 +59,8 @@ public class UpdateUserUsecaseTest {
         UUID userId = UUID.randomUUID();
         User existingUser = new User(userId, "Khalid", "old@test.com", "+962791234567");
 
-        when(validationExecutor.validateAndThrow(any(UserDTO.class))).thenReturn(Set.of());
-
-        when(userRepository.existsById(userId)).thenReturn(true);
+        when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
+        when(userValidator.validateAndThrow(any(User.class))).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -71,8 +71,8 @@ public class UpdateUserUsecaseTest {
         assertEquals("new@test.com", result.getEmail());
         assertEquals("+962791234567", result.getPhoneNumber());
 
-        verify(validationExecutor, times(1)).validateAndThrow(dto);
-        verify(userRepository, times(1)).existsById(userId);
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userValidator, times(1)).validateAndThrow(existingUser);
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(existingUser);
     }
@@ -82,9 +82,8 @@ public class UpdateUserUsecaseTest {
         UUID userId = UUID.randomUUID();
         User existingUser = new User(userId, "Khalid", "email@test.com", "+962791111111");
 
-        when(validationExecutor.validateAndThrow(any(UserDTO.class))).thenReturn(Set.of());
-
-        when(userRepository.existsById(userId)).thenReturn(true);
+        when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
+        when(userValidator.validateAndThrow(any(User.class))).thenReturn(Set.of());
         when(userRepository.findById(userId)).thenReturn(existingUser);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -95,24 +94,21 @@ public class UpdateUserUsecaseTest {
         assertEquals("email@test.com", result.getEmail());
         assertEquals("+962792222222", result.getPhoneNumber());
 
-        verify(validationExecutor, times(1)).validateAndThrow(dto);
-        verify(userRepository, times(1)).existsById(userId);
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userValidator, times(1)).validateAndThrow(existingUser);
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(existingUser);
     }
 
     @Test
-    void givenInvalidUser_whenUpdate_thenThrowsValidationException() {
+    void givenNonExistingUser_whenUpdate_thenThrowsValidationException() {
         UUID userId = UUID.randomUUID();
-        UserDTO dto = new UserDTO("", "bad-email", null);
+        UserDTO dto = new UserDTO("NewName", null, null);
 
-        Set<SimpleViolation> violations = Set.of(
-                new SimpleViolation("name", "too short"),
-                new SimpleViolation("email", "invalid")
-        );
-
-        when(validationExecutor.validateAndThrow(dto))
-                .thenThrow(new ValidationException(violations));
+        when(existenceValidator.validateAndThrow(userId))
+                .thenThrow(new ValidationException(Set.of(
+                        new SimpleViolation("user.id", "User with ID " + userId + " does not exist")
+                )));
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -120,10 +116,62 @@ public class UpdateUserUsecaseTest {
         );
 
         String message = exception.getMessage();
-        assertTrue(message.contains("name"));
-        assertTrue(message.contains("email"));
+        assertTrue(message.contains("user.id"));
+        assertTrue(message.contains("does not exist"));
 
-        verify(userRepository, never()).save(any(User.class));
-        verify(validationExecutor, times(1)).validateAndThrow(dto);
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userRepository, never()).findById(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void givenInvalidUpdatedUser_whenUpdate_thenThrowsValidationException() {
+        UUID userId = UUID.randomUUID();
+        User existingUser = new User(userId, "OldName", "old@test.com", "+962791234567");
+        UserDTO dto = new UserDTO("ab", "invalid-email", null);
+
+        when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
+        when(userRepository.findById(userId)).thenReturn(existingUser);
+        when(userValidator.validateAndThrow(any(User.class)))
+                .thenThrow(new ValidationException(Set.of(
+                        new SimpleViolation("user.name", "Name must be at least 3 characters"),
+                        new SimpleViolation("user.email", "Invalid email format")
+                )));
+
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> updateUserUsecase.execute(userId, dto)
+        );
+
+        String message = exception.getMessage();
+        assertTrue(message.contains("user.name"));
+        assertTrue(message.contains("user.email"));
+
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userValidator, times(1)).validateAndThrow(existingUser);
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void givenExistingUser_whenUpdateAllFields_thenAllFieldsAreUpdated() {
+        UUID userId = UUID.randomUUID();
+        User existingUser = new User(userId, "OldName", "old@test.com", "+962791111111");
+
+        when(existenceValidator.validateAndThrow(userId)).thenReturn(Set.of());
+        when(userValidator.validateAndThrow(any(User.class))).thenReturn(Set.of());
+        when(userRepository.findById(userId)).thenReturn(existingUser);
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        UserDTO dto = new UserDTO("NewName", "new@test.com", "+962792222222");
+        User result = updateUserUsecase.execute(userId, dto);
+
+        assertEquals("NewName", result.getName());
+        assertEquals("new@test.com", result.getEmail());
+        assertEquals("+962792222222", result.getPhoneNumber());
+
+        verify(existenceValidator, times(1)).validateAndThrow(userId);
+        verify(userValidator, times(1)).validateAndThrow(existingUser);
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).save(existingUser);
     }
 }

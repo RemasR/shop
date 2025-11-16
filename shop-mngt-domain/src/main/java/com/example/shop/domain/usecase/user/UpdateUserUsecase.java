@@ -11,25 +11,27 @@ import java.util.UUID;
 public class UpdateUserUsecase {
 
     private final UserRepository userRepository;
-    private final ValidationExecutor<UserDTO> validationExecutor;
+    private final ValidationExecutor<UUID> existenceValidationExecutor;
+    private final ValidationExecutor<User> userValidationExecutor;
 
-    public UpdateUserUsecase(UserRepository userRepository, ValidationExecutor<UserDTO> validationExecutor) {
+    public UpdateUserUsecase(UserRepository userRepository,
+                             ValidationExecutor<UUID> existenceValidationExecutor,
+                             ValidationExecutor<User> userValidationExecutor) {
         this.userRepository = userRepository;
-        this.validationExecutor = validationExecutor;
+        this.existenceValidationExecutor = existenceValidationExecutor;
+        this.userValidationExecutor = userValidationExecutor;
     }
 
     public User execute(UUID userId, UserDTO dto) {
-        validationExecutor.validateAndThrow(dto);
-
-        if (!userRepository.existsById(userId)) { // this should be done in a validator, fix it later
-            throw new RuntimeException("User not found");
-        }
+        existenceValidationExecutor.validateAndThrow(userId);
 
         User existingUser = userRepository.findById(userId);
 
         if (dto.getName() != null) existingUser.setName(dto.getName());
         if (dto.getEmail() != null) existingUser.setEmail(dto.getEmail());
         if (dto.getPhoneNumber() != null) existingUser.setPhoneNumber(dto.getPhoneNumber());
+
+        userValidationExecutor.validateAndThrow(existingUser);
 
         return userRepository.save(existingUser);
     }
