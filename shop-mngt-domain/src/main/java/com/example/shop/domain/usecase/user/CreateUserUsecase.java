@@ -19,12 +19,13 @@ import java.util.UUID;
         public User execute(UserDTO dto) {
             validationExecutor.validateAndThrow(dto);
 
-            User user = new User(
-                    UUID.randomUUID().toString().trim(),
-                    dto.getName(),
-                    dto.getEmail(),
-                    dto.getPhoneNumber()
-            );
+            User user = User.builder()
+                    .id(UUID.randomUUID().toString())
+                    .name(dto.getName())
+                    .email(dto.getEmail())
+                    .phoneNumber(dto.getPhoneNumber())
+                    .build();
+
 
             return userRepository.save(user);
         }
