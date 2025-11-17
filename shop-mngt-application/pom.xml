@@ -31,7 +31,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Domain Layer - KEEP THIS! -->
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>shop-mngt-domain</artifactId>
