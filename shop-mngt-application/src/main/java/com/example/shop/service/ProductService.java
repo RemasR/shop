@@ -4,11 +4,9 @@ import com.example.shop.domain.dto.ProductDTO;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.usecase.product.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 public class ProductService {
     private final CreateProductUsecase createProductUsecase;

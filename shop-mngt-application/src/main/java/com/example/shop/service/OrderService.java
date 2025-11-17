@@ -5,11 +5,9 @@ import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.usecase.order.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 public class OrderService {
     private final CreateOrderUsecase createOrderUsecase;

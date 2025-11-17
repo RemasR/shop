@@ -4,14 +4,12 @@ import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.usecase.user.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 public class UserService {
-    private final CreateUserUsecase createUserUsecase;
+     private final CreateUserUsecase createUserUsecase;
     private final UpdateUserUsecase updateUserUsecase;
     private final DeleteUserUsecase deleteUserUsecase;
     private final FindUserByIdUsecase findUserByIdUsecase;
