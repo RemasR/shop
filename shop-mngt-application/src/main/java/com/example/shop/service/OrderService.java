@@ -23,13 +23,13 @@ public class OrderService {
     public Order getOrderById(String id){
         return findOrderByIdUsecase.execute(id);
     }
-    public Order updateOrder(String id){
-        return updateOrderUsecase.execute(id, OrderStatus.PENDING);
+    public Order updateOrder(String id, OrderDTO dto){
+        return updateOrderUsecase.execute(id, dto);
     }
     public void cancelOrder(String id){
         deleteOrderUsecase.execute(id);
     }
-    public List<Order> getUserOrders(String userId){ // do i write userid
+    public List<Order> getUserOrders(String userId){
         return findOrderByUserUsecase.execute(userId);
     }
     public List<Order> getOrderByStatus(OrderStatus orderStatus){
