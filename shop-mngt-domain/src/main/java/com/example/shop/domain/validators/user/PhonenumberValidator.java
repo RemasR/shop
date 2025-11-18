@@ -14,8 +14,7 @@ public class PhonenumberValidator implements Validator<User> {
         Set<SimpleViolation> violations = new HashSet<>();
         if (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty()) {
             violations.add(new SimpleViolation("user.phoneNumber", "Phone number cannot be null or empty"));
-        }
-        else if (!user.getPhoneNumber().matches("^\\+9627[7-9]\\d{7}$")) {
+        } else if (!user.getPhoneNumber().matches("^\\+9627[7-9]\\d{7}$")) {
             violations.add(new SimpleViolation("user.phoneNumber", "Invalid phone number format"));
         }
 

@@ -5,8 +5,8 @@ import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
 import com.example.shop.domain.repository.UserRepository;
-import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.order.FindOrderByUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-    public class FindOrderByUserUsecaseTest {
+public class FindOrderByUserUsecaseTest {
 
     private OrderRepository orderRepository;
     private UserRepository userRepository;

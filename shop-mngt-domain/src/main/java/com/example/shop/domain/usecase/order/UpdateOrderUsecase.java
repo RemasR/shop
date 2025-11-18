@@ -4,13 +4,13 @@ import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.OrderItemDTO;
 import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderItem;
-import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.OrderRepository;
 import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateOrderUsecase {
 

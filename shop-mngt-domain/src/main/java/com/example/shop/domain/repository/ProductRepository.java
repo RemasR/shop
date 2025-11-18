@@ -2,7 +2,7 @@ package com.example.shop.domain.repository;
 
 import com.example.shop.domain.entity.Product;
 
-import java.util.*;
+import java.util.List;
 
 public interface ProductRepository {
 

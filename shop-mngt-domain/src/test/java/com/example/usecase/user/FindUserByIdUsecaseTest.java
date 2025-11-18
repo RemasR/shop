@@ -2,8 +2,8 @@ package com.example.usecase.user;
 
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
-import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.user.FindUserByIdUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class FindUserByIdUsecaseTest {
 

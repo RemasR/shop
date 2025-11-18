@@ -4,7 +4,6 @@ import com.example.shop.domain.dto.UserDTO;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
-import com.example.shop.domain.validators.user.*;
 
 public class UpdateUserUsecase {
 
@@ -19,6 +18,7 @@ public class UpdateUserUsecase {
         this.existenceValidationExecutor = existenceValidationExecutor;
         this.userValidationExecutor = userValidationExecutor;
     }
+
     public User execute(String userId, UserDTO dto) {
         existenceValidationExecutor.validateAndThrow(userId);
 

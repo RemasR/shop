@@ -9,25 +9,29 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class UserService {
-     private final CreateUserUsecase createUserUsecase;
+    private final CreateUserUsecase createUserUsecase;
     private final UpdateUserUsecase updateUserUsecase;
     private final DeleteUserUsecase deleteUserUsecase;
     private final FindUserByIdUsecase findUserByIdUsecase;
     private final ListAllUserUsecase listAllUserUsecase;
 
-    public User registerUser(UserDTO dto){
+    public User registerUser(UserDTO dto) {
         return createUserUsecase.execute(dto);
     }
-    public User getUserById(String id){
+
+    public User getUserById(String id) {
         return findUserByIdUsecase.execute(id);
     }
-    public User updateUser(String id, UserDTO dto){
+
+    public User updateUser(String id, UserDTO dto) {
         return updateUserUsecase.execute(id, dto);
     }
-    public void deleteUser(String id){
+
+    public void deleteUser(String id) {
         deleteUserUsecase.execute(id);
     }
-    public List<User> getAllUsers(){
+
+    public List<User> getAllUsers() {
         return listAllUserUsecase.execute();
     }
 }

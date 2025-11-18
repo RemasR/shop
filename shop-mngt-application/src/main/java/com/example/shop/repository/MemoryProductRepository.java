@@ -3,7 +3,10 @@ package com.example.shop.repository;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MemoryProductRepository implements ProductRepository {
 

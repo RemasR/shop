@@ -2,7 +2,6 @@ package com.example.shop.domain.usecase.user;
 
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
-import com.example.shop.domain.validators.user.*;
 
 public class DeleteUserUsecase {
 
@@ -13,6 +12,7 @@ public class DeleteUserUsecase {
         this.userRepository = userRepository;
         this.validationExecutor = validationExecutor;
     }
+
     public void execute(String id) {
         validationExecutor.validateAndThrow(id);
         userRepository.deleteById(id);

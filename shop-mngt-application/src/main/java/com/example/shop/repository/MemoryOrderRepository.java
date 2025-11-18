@@ -5,7 +5,10 @@ import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MemoryOrderRepository implements OrderRepository {
 

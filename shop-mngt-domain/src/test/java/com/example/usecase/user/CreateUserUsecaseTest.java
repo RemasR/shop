@@ -10,10 +10,10 @@ import com.example.shop.domain.usecase.user.CreateUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import java.util.Set;
 
 public class CreateUserUsecaseTest {
 

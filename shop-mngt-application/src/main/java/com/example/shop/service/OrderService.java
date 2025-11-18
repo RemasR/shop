@@ -17,6 +17,7 @@ public class OrderService {
     private final FindOrderByStatusUsecase findOrderByStatusUsecase;
     private final FindOrderByUserUsecase findOrderByUserUsecase;
     private final ListAllOrderUsecase listAllOrderUsecase;
+
     public Order createOrder(OrderDTO dto) {
         return createOrderUsecase.execute(dto);
     }

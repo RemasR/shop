@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductNameValidatorTest {
 
@@ -23,11 +21,11 @@ public class ProductNameValidatorTest {
 
     @Test
     void givenValidName_whenValidate_thenNoViolations() {
-    Product product = Product.builder()
-            .name("t-shirt")
-            .price(5.0)
-            .description("Black T-Shirt")
-            .build();
+        Product product = Product.builder()
+                .name("t-shirt")
+                .price(5.0)
+                .description("Black T-Shirt")
+                .build();
 
         Set<SimpleViolation> violations = validator.validate(product);
 

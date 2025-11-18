@@ -1,8 +1,10 @@
 package com.example.shop.domain.repository;
 
-import com.example.shop.domain.entity.*;
+import com.example.shop.domain.entity.Order;
+import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.domain.entity.User;
 
-import java.util.*;
+import java.util.List;
 
 public interface OrderRepository {
 

@@ -2,16 +2,17 @@ package com.example.usecase.product;
 
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
-import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.product.FindProductByIdUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class FindProductByIdUsecaseTest {
 

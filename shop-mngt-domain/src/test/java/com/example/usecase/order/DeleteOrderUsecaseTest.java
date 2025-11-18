@@ -1,8 +1,8 @@
 package com.example.usecase.order;
 
 import com.example.shop.domain.repository.OrderRepository;
-import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;
+import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.order.DeleteOrderUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class DeleteOrderUsecaseTest {

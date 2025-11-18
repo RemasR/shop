@@ -1,7 +1,8 @@
 package com.example.shop.domain.repository;
 
 import com.example.shop.domain.entity.User;
-import java.util.*;
+
+import java.util.List;
 
 public interface UserRepository {
 

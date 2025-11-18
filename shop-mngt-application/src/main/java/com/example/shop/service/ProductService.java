@@ -15,19 +15,23 @@ public class ProductService {
     private final FindProductByIdUsecase findProductByIdUsecase;
     private final ListAllProductUsecase listAllProductUsecase;
 
-    public Product createProduct(ProductDTO dto){
+    public Product createProduct(ProductDTO dto) {
         return createProductUsecase.execute(dto);
     }
-    public Product getProductById(String id){
+
+    public Product getProductById(String id) {
         return findProductByIdUsecase.execute(id);
     }
-    public Product updateProduct(String id, ProductDTO dto){
+
+    public Product updateProduct(String id, ProductDTO dto) {
         return updateProductUsecase.execute(id, dto);
     }
-    public void deleteProduct(String id){
+
+    public void deleteProduct(String id) {
         deleteProductUsecase.execute(id);
     }
-    public List<Product> getAllProducts(){
+
+    public List<Product> getAllProducts() {
         return listAllProductUsecase.execute();
     }
 }
