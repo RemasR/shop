@@ -6,6 +6,8 @@ import com.example.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -22,10 +24,15 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
+    @PutMapping
     public Product updateProduct(@PathVariable String id, @RequestParam ProductDTO dto) {
         return productService.updateProduct(id, dto);
     }
 
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);

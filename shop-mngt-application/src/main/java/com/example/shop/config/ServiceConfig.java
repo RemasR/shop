@@ -37,8 +37,9 @@ public class ServiceConfig {
                                      DeleteOrderUsecase deleteOrderUsecase,
                                      FindOrderByIdUsecase findOrderByIdUsecase,
                                      FindOrderByStatusUsecase findOrderByStatusUsecase,
-                                     FindOrderByUserUsecase findOrderByUserUsecase) {
+                                     FindOrderByUserUsecase findOrderByUserUsecase,
+                                     ListAllOrderUsecase listAllOrderUsecase) {
         return new OrderService(createOrderUsecase, updateOrderUsecase, deleteOrderUsecase,
-                findOrderByIdUsecase, findOrderByStatusUsecase, findOrderByUserUsecase);
+                findOrderByIdUsecase, findOrderByStatusUsecase, findOrderByUserUsecase, listAllOrderUsecase);
     }
 }

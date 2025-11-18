@@ -26,7 +26,7 @@ public class OrderController {
         return orderService.getOrderById(id);
     }
 
-    @GetMapping
+    @PutMapping
     public Order updateOrderStatus(@PathVariable String id, @RequestParam OrderDTO dto) {
         return orderService.updateOrder(id, dto);
     }
@@ -35,7 +35,7 @@ public class OrderController {
     public List<Order> getAllOrders() {
         return orderService.getAllOrders();
     }
-    
+
     @DeleteMapping("/{id}")
     public void cancelOrder(@PathVariable String id) {
         orderService.cancelOrder(id);
