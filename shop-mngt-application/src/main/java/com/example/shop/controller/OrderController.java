@@ -1,13 +1,48 @@
 package com.example.shop.controller;
 
+import com.example.shop.domain.dto.OrderDTO;
+import com.example.shop.domain.entity.Order;
+import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.service.OrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
 public class OrderController {
+
+    private final OrderService orderService;
+
+    @PostMapping
+    public Order createOrder(@RequestBody OrderDTO dto) {
+        return orderService.createOrder(dto);
+    }
+
+    @GetMapping("/{id}")
+    public Order getOrderById(@PathVariable String id) {
+        return orderService.getOrderById(id);
+    }
+
+    @PutMapping("/{id}/status")
+    public Order updateOrderStatus(@PathVariable String id, @RequestParam OrderDTO dto) {
+        return orderService.updateOrder(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void cancelOrder(@PathVariable String id) {
+        orderService.cancelOrder(id);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Order> getUserOrders(@PathVariable String userId) {
+        return orderService.getUserOrders(userId);
+    }
+
+    @GetMapping("/status/{status}")
+    public List<Order> getOrdersByStatus(@PathVariable OrderStatus status) {
+        return orderService.getOrderByStatus(status);
+    }
 }
-/*
-POST   /api/orders             - Create order
-GET    /api/orders/{id}        - Get order by ID
-GET    /api/orders             - Get all orders
-PUT    /api/orders/{id}/status - Update order status
-DELETE /api/orders/{id}        - Cancel order
-GET    /api/orders/user/{userId} - Get user's orders
-GET    /api/orders/status/{status} - Get orders by status
- */
