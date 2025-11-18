@@ -1,24 +1,42 @@
 package com.example.shop.controller;
 
+import com.example.shop.domain.dto.UserDTO;
+import com.example.shop.domain.entity.User;
 import com.example.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private UserService userService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello";
+    private final UserService userService;
+
+    @PostMapping
+    public User createUser(@RequestBody UserDTO dto) {
+        return userService.registerUser(dto);
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable String id) {
+        return userService.getUserById(id);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable String id, @RequestBody UserDTO dto) {
+        return userService.updateUser(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
     }
 }
-/*
-POST   /api/users              - Create user
-GET    /api/users/{id}         - Get user by ID
-GET    /api/users              - Get all users
-PUT    /api/users/{id}         - Update user
-DELETE /api/users/{id}         - Delete user
- */
