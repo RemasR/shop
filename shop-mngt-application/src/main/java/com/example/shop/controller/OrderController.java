@@ -26,7 +26,6 @@ public class OrderController {
         return orderService.getOrderById(id);
     }
 
-    @PutMapping("/{id}/status")
     public Order updateOrderStatus(@PathVariable String id, @RequestParam OrderDTO dto) {
         return orderService.updateOrder(id, dto);
     }
