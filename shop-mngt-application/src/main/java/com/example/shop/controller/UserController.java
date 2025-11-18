@@ -30,13 +30,14 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") //no id
     public User updateUser(@PathVariable String id, @RequestBody UserDTO dto) {
         return userService.updateUser(id, dto);
     }
-
+    //use username not id
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
     }
+    //add username
 }
