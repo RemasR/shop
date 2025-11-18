@@ -16,23 +16,32 @@ public class OrderService {
     private final FindOrderByIdUsecase findOrderByIdUsecase;
     private final FindOrderByStatusUsecase findOrderByStatusUsecase;
     private final FindOrderByUserUsecase findOrderByUserUsecase;
-
-    public Order createOrder(OrderDTO dto){
+    private final ListAllOrderUsecase listAllOrderUsecase;
+    public Order createOrder(OrderDTO dto) {
         return createOrderUsecase.execute(dto);
     }
-    public Order getOrderById(String id){
+
+    public Order getOrderById(String id) {
         return findOrderByIdUsecase.execute(id);
     }
-    public Order updateOrder(String id, OrderDTO dto){
+
+    public Order updateOrder(String id, OrderDTO dto) {
         return updateOrderUsecase.execute(id, dto);
     }
-    public void cancelOrder(String id){
+
+    public void cancelOrder(String id) {
         deleteOrderUsecase.execute(id);
     }
-    public List<Order> getUserOrders(String userId){
+
+    public List<Order> getAllOrders() {
+        return listAllOrderUsecase.execute();
+    }
+
+    public List<Order> getUserOrders(String userId) {
         return findOrderByUserUsecase.execute(userId);
     }
-    public List<Order> getOrderByStatus(OrderStatus orderStatus){
+
+    public List<Order> getOrderByStatus(OrderStatus orderStatus) {
         return findOrderByStatusUsecase.execute(orderStatus);
     }
 }
