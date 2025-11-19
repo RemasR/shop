@@ -34,14 +34,14 @@ public class MemoryOrderRepository implements OrderRepository {
     }
 
     @Override
-    public List<Order> findByUser(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
+    public List<Order> findByUserId(String userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
         }
 
         List<Order> result = new ArrayList<>();
         for (Order order : orderStore.values()) {
-            if (order.getUser().getId().equals(user.getId())) {
+            if (order.getUserId().equals(userId)) {
                 result.add(order);
             }
         }

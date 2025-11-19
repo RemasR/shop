@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 public class CreateOrderUsecaseTest {
 
     private OrderRepository orderRepository;
-    private UserRepository userRepository;
     private ProductRepository productRepository;
     private ValidationExecutor<OrderDTO> validationExecutor;
     private CreateOrderUsecase createOrderUsecase;
@@ -33,16 +32,14 @@ public class CreateOrderUsecaseTest {
     @BeforeEach
     void setUp() {
         orderRepository = mock(OrderRepository.class);
-        userRepository = mock(UserRepository.class);
         productRepository = mock(ProductRepository.class);
         validationExecutor = mock(ValidationExecutor.class);
-        createOrderUsecase = new CreateOrderUsecase(orderRepository, userRepository, productRepository, validationExecutor);
+        createOrderUsecase = new CreateOrderUsecase(orderRepository, productRepository, validationExecutor);
     }
 
     @Test
     void givenValidOrderDTO_whenExecute_thenOrderIsCreated() {
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Product product = Product.builder()
                 .id("1")
@@ -58,14 +55,13 @@ public class CreateOrderUsecaseTest {
                 .build();
 
         when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
-        when(userRepository.findById(userId)).thenReturn(user);
         when(productRepository.findById("1")).thenReturn(product);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Order result = createOrderUsecase.execute(orderDTO);
 
         assertNotNull(result);
-        assertEquals(user, result.getUser());
+        assertEquals(userId, result.getUserId());
         assertEquals(1, result.getItems().size());
         assertEquals(2000.0, result.getTotalPrice());
         assertEquals(OrderStatus.PENDING, result.getStatus());
@@ -77,7 +73,6 @@ public class CreateOrderUsecaseTest {
     @Test
     void givenMultipleItems_whenExecute_thenCalculatesTotalCorrectly() {
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Product product1 = Product.builder().id("1").name("Laptop").price(1000.0).build();
         Product product2 = Product.builder().id("2").name("Mouse").price(50.0).build();
@@ -90,7 +85,6 @@ public class CreateOrderUsecaseTest {
                 .build();
 
         when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
-        when(userRepository.findById(userId)).thenReturn(user);
         when(productRepository.findById("1")).thenReturn(product1);
         when(productRepository.findById("2")).thenReturn(product2);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));

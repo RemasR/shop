@@ -15,24 +15,19 @@ import java.util.UUID;
 public class CreateOrderUsecase {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ValidationExecutor<OrderDTO> validationExecutor;
 
     public CreateOrderUsecase(OrderRepository orderRepository,
-                              UserRepository userRepository,
                               ProductRepository productRepository,
                               ValidationExecutor<OrderDTO> validationExecutor) {
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.validationExecutor = validationExecutor;
     }
 
     public Order execute(OrderDTO dto) {
         validationExecutor.validateAndThrow(dto);
-
-        User user = userRepository.findById(dto.getUserId());
 
         List<OrderItem> orderItems = new ArrayList<>();
         double totalPrice = 0.0;
@@ -46,7 +41,7 @@ public class CreateOrderUsecase {
 
         Order order = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(dto.getUserId())
                 .items(orderItems)
                 .totalPrice(totalPrice)
                 .status(OrderStatus.PENDING)

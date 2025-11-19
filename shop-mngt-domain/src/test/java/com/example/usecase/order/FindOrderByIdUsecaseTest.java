@@ -33,10 +33,10 @@ public class FindOrderByIdUsecaseTest {
     @Test
     void givenValidOrderId_whenExecute_thenReturnsOrder() {
         String orderId = UUID.randomUUID().toString();
-        User user = new User(UUID.randomUUID().toString(), "Ahmad", "ahmad@test.com", "+962791234567");
+        String userId = UUID.randomUUID().toString();
         Order order = Order.builder()
                 .id(orderId)
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(100.0)
                 .status(OrderStatus.PENDING)
@@ -49,7 +49,7 @@ public class FindOrderByIdUsecaseTest {
 
         assertNotNull(result);
         assertEquals(orderId, result.getId());
-        assertEquals(user, result.getUser());
+        assertEquals(userId, result.getUserId());
 
         verify(validationExecutor, times(1)).validateAndThrow(orderId);
         verify(orderRepository, times(1)).findById(orderId);

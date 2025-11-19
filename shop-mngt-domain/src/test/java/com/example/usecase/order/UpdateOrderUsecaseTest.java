@@ -55,7 +55,7 @@ public class UpdateOrderUsecaseTest {
         OrderItem oldItem = new OrderItem(oldProduct, 1);
         Order existingOrder = Order.builder()
                 .id(orderId)
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>(List.of(oldItem)))
                 .totalPrice(50.0)
                 .status(OrderStatus.PENDING)
@@ -135,7 +135,7 @@ public class UpdateOrderUsecaseTest {
 
         Order existingOrder = Order.builder()
                 .id(orderId)
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>(List.of(existingItem)))
                 .totalPrice(200.0)
                 .status(OrderStatus.CONFIRMED)

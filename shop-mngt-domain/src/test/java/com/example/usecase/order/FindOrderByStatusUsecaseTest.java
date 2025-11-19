@@ -28,12 +28,14 @@ public class FindOrderByStatusUsecaseTest {
 
     @Test
     void givenValidStatus_whenExecute_thenReturnsOrdersWithThatStatus() {
-        User user1 = new User(UUID.randomUUID().toString(), "Ahmad", "ahmad@test.com", "+962791234567");
-        User user2 = new User(UUID.randomUUID().toString(), "Sara", "sara@test.com", "+962791234568");
+        String user1Id = UUID.randomUUID().toString();
+        User user1 = new User(user1Id, "Ahmad", "ahmad@test.com", "+962791234567");
+        String user2Id = UUID.randomUUID().toString();
+        User user2 = new User(user2Id, "Sara", "sara@test.com", "+962791234568");
 
         Order order1 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user1)
+                .userId(user1Id)
                 .items(new ArrayList<>())
                 .totalPrice(100.0)
                 .status(OrderStatus.PENDING)
@@ -41,7 +43,7 @@ public class FindOrderByStatusUsecaseTest {
 
         Order order2 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user2)
+                .userId(user2Id)
                 .items(new ArrayList<>())
                 .totalPrice(200.0)
                 .status(OrderStatus.PENDING)
@@ -65,11 +67,12 @@ public class FindOrderByStatusUsecaseTest {
 
     @Test
     void givenConfirmedStatus_whenExecute_thenReturnsOnlyConfirmedOrders() {
-        User user = new User(UUID.randomUUID().toString(), "Khalid", "khalid@test.com", "+962791234567");
+        String userId = UUID.randomUUID().toString();
+        User user = new User(userId, "Khalid", "khalid@test.com", "+962791234567");
 
         Order order = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(150.0)
                 .status(OrderStatus.CONFIRMED)
@@ -88,11 +91,12 @@ public class FindOrderByStatusUsecaseTest {
 
     @Test
     void givenShippedStatus_whenExecute_thenReturnsOnlyShippedOrders() {
-        User user = new User(UUID.randomUUID().toString(), "Remas", "remas@test.com", "+962791234567");
+        String userId = UUID.randomUUID().toString();
+        User user = new User(userId, "Remas", "remas@test.com", "+962791234567");
 
         Order order = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(300.0)
                 .status(OrderStatus.SHIPPED)

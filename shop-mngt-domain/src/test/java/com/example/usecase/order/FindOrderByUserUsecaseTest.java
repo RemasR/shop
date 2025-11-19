@@ -2,9 +2,7 @@ package com.example.usecase.order;
 
 import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderStatus;
-import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
-import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.order.FindOrderByUserUsecase;
@@ -22,26 +20,23 @@ import static org.mockito.Mockito.*;
 public class FindOrderByUserUsecaseTest {
 
     private OrderRepository orderRepository;
-    private UserRepository userRepository;
     private ValidationExecutor<String> validationExecutor;
     private FindOrderByUserUsecase findOrderByUserUsecase;
 
     @BeforeEach
     void setUp() {
         orderRepository = mock(OrderRepository.class);
-        userRepository = mock(UserRepository.class);
         validationExecutor = mock(ValidationExecutor.class);
-        findOrderByUserUsecase = new FindOrderByUserUsecase(orderRepository, userRepository, validationExecutor);
+        findOrderByUserUsecase = new FindOrderByUserUsecase(orderRepository, validationExecutor);
     }
 
     @Test
     void givenValidUserId_whenExecute_thenReturnsAllOrdersForUser() {
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
 
         Order order1 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(100.0)
                 .status(OrderStatus.PENDING)
@@ -49,7 +44,7 @@ public class FindOrderByUserUsecaseTest {
 
         Order order2 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(200.0)
                 .status(OrderStatus.CONFIRMED)
@@ -58,8 +53,7 @@ public class FindOrderByUserUsecaseTest {
         List<Order> expectedOrders = List.of(order1, order2);
 
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
-        when(userRepository.findById(userId)).thenReturn(user);
-        when(orderRepository.findByUser(user)).thenReturn(expectedOrders);
+        when(orderRepository.findByUserId(userId)).thenReturn(expectedOrders);
 
         List<Order> result = findOrderByUserUsecase.execute(userId);
 
@@ -67,21 +61,18 @@ public class FindOrderByUserUsecaseTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(order1));
         assertTrue(result.contains(order2));
-        result.forEach(order -> assertEquals(userId, order.getUser().getId()));
+        result.forEach(order -> assertEquals(userId, order.getUserId()));
 
         verify(validationExecutor, times(1)).validateAndThrow(userId);
-        verify(userRepository, times(1)).findById(userId);
-        verify(orderRepository, times(1)).findByUser(user);
+        verify(orderRepository, times(1)).findByUserId(userId);
     }
 
     @Test
     void givenUserWithNoOrders_whenExecute_thenReturnsEmptyList() {
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Khalid", "khalid@test.com", "+962791234567");
 
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
-        when(userRepository.findById(userId)).thenReturn(user);
-        when(orderRepository.findByUser(user)).thenReturn(List.of());
+        when(orderRepository.findByUserId(userId)).thenReturn(List.of());
 
         List<Order> result = findOrderByUserUsecase.execute(userId);
 
@@ -89,8 +80,7 @@ public class FindOrderByUserUsecaseTest {
         assertTrue(result.isEmpty());
 
         verify(validationExecutor, times(1)).validateAndThrow(userId);
-        verify(userRepository, times(1)).findById(userId);
-        verify(orderRepository, times(1)).findByUser(user);
+        verify(orderRepository, times(1)).findByUserId(userId);
     }
 
     @Test
@@ -103,8 +93,7 @@ public class FindOrderByUserUsecaseTest {
         assertThrows(ValidationException.class, () -> findOrderByUserUsecase.execute(userId));
 
         verify(validationExecutor, times(1)).validateAndThrow(userId);
-        verify(userRepository, never()).findById(any());
-        verify(orderRepository, never()).findByUser(any());
+        verify(orderRepository, never()).findByUserId(any());
     }
 
     @Test
@@ -115,18 +104,16 @@ public class FindOrderByUserUsecaseTest {
         assertThrows(ValidationException.class, () -> findOrderByUserUsecase.execute(null));
 
         verify(validationExecutor, times(1)).validateAndThrow(null);
-        verify(userRepository, never()).findById(any());
-        verify(orderRepository, never()).findByUser(any());
+        verify(orderRepository, never()).findByUserId(any());
     }
 
     @Test
     void givenUserWithMultipleOrderStatuses_whenExecute_thenReturnsAllOrdersRegardlessOfStatus() {
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Ahmad", "ahmad@test.com", "+962791234567");
 
         Order pendingOrder = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(100.0)
                 .status(OrderStatus.PENDING)
@@ -134,7 +121,7 @@ public class FindOrderByUserUsecaseTest {
 
         Order confirmedOrder = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(200.0)
                 .status(OrderStatus.CONFIRMED)
@@ -142,7 +129,7 @@ public class FindOrderByUserUsecaseTest {
 
         Order deliveredOrder = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user)
+                .userId(userId)
                 .items(new ArrayList<>())
                 .totalPrice(300.0)
                 .status(OrderStatus.DELIVERED)
@@ -151,8 +138,7 @@ public class FindOrderByUserUsecaseTest {
         List<Order> allOrders = List.of(pendingOrder, confirmedOrder, deliveredOrder);
 
         when(validationExecutor.validateAndThrow(userId)).thenReturn(Set.of());
-        when(userRepository.findById(userId)).thenReturn(user);
-        when(orderRepository.findByUser(user)).thenReturn(allOrders);
+        when(orderRepository.findByUserId(userId)).thenReturn(allOrders);
 
         List<Order> result = findOrderByUserUsecase.execute(userId);
 
@@ -163,8 +149,6 @@ public class FindOrderByUserUsecaseTest {
         assertTrue(result.contains(deliveredOrder));
 
         verify(validationExecutor, times(1)).validateAndThrow(userId);
-        verify(userRepository, times(1)).findById(userId);
-        verify(orderRepository, times(1)).findByUser(user);
+        verify(orderRepository, times(1)).findByUserId(userId);
     }
-
 }

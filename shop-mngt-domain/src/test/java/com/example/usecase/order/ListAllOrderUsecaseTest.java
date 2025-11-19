@@ -28,19 +28,21 @@ public class ListAllOrderUsecaseTest {
 
     @Test
     void givenOrdersExist_whenExecute_thenReturnsAllOrders() {
-        User user1 = new User(UUID.randomUUID().toString(), "Remas", "remas@test.com", "+962791234567");
-        User user2 = new User(UUID.randomUUID().toString(), "Hamza", "hamza@test.com", "+962791234568");
+        String user1Id = UUID.randomUUID().toString();
+        User user1 = new User(user1Id, "Remas", "remas@test.com", "+962791234567");
+        String user2Id = UUID.randomUUID().toString();
+        User user2 = new User(user2Id, "Hamza", "hamza@test.com", "+962791234568");
 
         Order order1 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user1)
+                .userId(user1Id)
                 .items(new ArrayList<>())
                 .totalPrice(100.0)
                 .status(OrderStatus.PENDING)
                 .build();
         Order order2 = Order.builder()
                 .id(UUID.randomUUID().toString())
-                .user(user2)
+                .userId(user2Id)
                 .items(new ArrayList<>())
                 .totalPrice(200.0)
                 .status(OrderStatus.CONFIRMED)

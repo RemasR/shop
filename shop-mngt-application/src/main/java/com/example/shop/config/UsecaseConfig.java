@@ -80,10 +80,9 @@ public class UsecaseConfig {
 
     @Bean
     public CreateOrderUsecase createOrderUsecase(OrderRepository orderRepository,
-                                                 UserRepository userRepository,
                                                  ProductRepository productRepository,
                                                  ValidationExecutor<OrderDTO> orderDTOValidationExecutor) {
-        return new CreateOrderUsecase(orderRepository, userRepository, productRepository, orderDTOValidationExecutor);
+        return new CreateOrderUsecase(orderRepository, productRepository, orderDTOValidationExecutor);
     }
 
     @Bean
@@ -115,9 +114,8 @@ public class UsecaseConfig {
 
     @Bean
     public FindOrderByUserUsecase findOrderByUserUsecase(OrderRepository orderRepository,
-                                                         UserRepository userRepository,
                                                          ValidationExecutor<String> userExistenceValidationExecutor) {
-        return new FindOrderByUserUsecase(orderRepository, userRepository, userExistenceValidationExecutor);
+        return new FindOrderByUserUsecase(orderRepository, userExistenceValidationExecutor);
     }
 
     @Bean
