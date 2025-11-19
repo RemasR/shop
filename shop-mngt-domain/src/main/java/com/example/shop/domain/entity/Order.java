@@ -23,10 +23,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-
+    @Column
     private List<OrderItem> items;
 
-    @Column(nullable = false)
+    @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
     @Enumerated(EnumType.STRING)
