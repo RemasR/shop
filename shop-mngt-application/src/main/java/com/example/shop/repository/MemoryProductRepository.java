@@ -32,9 +32,8 @@ public class MemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product deleteById(String id) {
+    public void deleteById(String id) {
         productStore.remove(id);
-        return null;
     }
 
     @Override

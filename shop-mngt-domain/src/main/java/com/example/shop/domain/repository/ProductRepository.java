@@ -12,7 +12,7 @@ public interface ProductRepository {
 
     List<Product> findAllProducts();
 
-    Product deleteById(String id);
+    void deleteById(String id);
 
     boolean existsById(String id);
 }
