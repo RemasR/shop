@@ -1,9 +1,6 @@
 package com.example.shop.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +15,9 @@ import lombok.NoArgsConstructor;
 public class OrderItem {
 
     @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column
+    @Column(nullable = false)
     private int quantity;
 }
