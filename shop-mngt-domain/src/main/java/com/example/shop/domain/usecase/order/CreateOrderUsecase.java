@@ -16,18 +16,17 @@ public class CreateOrderUsecase {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final ValidationExecutor<OrderDTO> validationExecutor;
+    private final ValidationExecutor<Order> validationExecutor;
 
     public CreateOrderUsecase(OrderRepository orderRepository,
                               ProductRepository productRepository,
-                              ValidationExecutor<OrderDTO> validationExecutor) {
+                              ValidationExecutor<Order> validationExecutor) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.validationExecutor = validationExecutor;
     }
 
     public Order execute(OrderDTO dto) {
-        validationExecutor.validateAndThrow(dto);
 
         List<OrderItem> orderItems = new ArrayList<>();
         double totalPrice = 0.0;
@@ -46,7 +45,7 @@ public class CreateOrderUsecase {
                 .totalPrice(totalPrice)
                 .status(OrderStatus.PENDING)
                 .build();
-
+        validationExecutor.validateAndThrow(order);
         return orderRepository.save(order);
     }
 }

@@ -9,6 +9,7 @@ import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.user.CreateUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class CreateUserUsecaseTest {
 
     private UserRepository userRepository;
-    private ValidationExecutor<UserDTO> validationExecutor;
+    private ValidationExecutor<User> validationExecutor;
     private CreateUserUsecase createUserUsecase;
 
     @BeforeEach
@@ -30,24 +31,33 @@ public class CreateUserUsecaseTest {
 
     @Test
     void givenValidUser_whenExecute_thenUserIsCreatedAndSaved() {
+
         UserDTO dto = UserDTO.builder()
                 .name("Khalid")
                 .email("khalid@gmail.com")
                 .phoneNumber("+962794128940")
                 .build();
 
-        when(validationExecutor.validateAndThrow(dto)).thenReturn(Set.of());
-
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.save(any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         User result = createUserUsecase.execute(dto);
 
         assertNotNull(result);
         assertEquals("Khalid", result.getName());
 
-        verify(validationExecutor, times(1)).validateAndThrow(dto);
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+
+        verify(validationExecutor, times(1)).validateAndThrow(userCaptor.capture());
         verify(userRepository, times(1)).save(any(User.class));
+
+        User validatedUser = userCaptor.getValue();
+
+        assertEquals("Khalid", validatedUser.getName());
+        assertEquals("khalid@gmail.com", validatedUser.getEmail());
+        assertEquals("+962794128940", validatedUser.getPhoneNumber());
     }
+
 
 
     @Test
@@ -59,12 +69,12 @@ public class CreateUserUsecaseTest {
                 .build();
 
         Set<SimpleViolation> violations = Set.of(
-                new SimpleViolation("name", "too short"),
-                new SimpleViolation("email", "invalid")
+                new SimpleViolation("user.name", "Name must be at least 3 characters"),
+                new SimpleViolation("user.email", "Email format is invalid")
         );
 
-        when(validationExecutor.validateAndThrow(dto))
-                .thenThrow(new ValidationException(violations));
+        doThrow(new ValidationException(violations))
+                .when(validationExecutor).validateAndThrow(any(User.class));
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -72,13 +82,14 @@ public class CreateUserUsecaseTest {
         );
 
         String message = exception.getMessage();
-        assertTrue(message.contains("name"));
-        assertTrue(message.contains("email"));
-        assertTrue(message.contains("too short"));
-        assertTrue(message.contains("invalid"));
+        assertTrue(message.contains("user.name"));
+        assertTrue(message.contains("user.email"));
+        assertTrue(message.contains("Name must be at least 3 characters"));
+        assertTrue(message.contains("Email format is invalid"));
 
         verify(userRepository, never()).save(any(User.class));
     }
+
 /*
  for(SimpleViolation vicontainsolation : violations){ // TODO: FIX ME
             assert(violations_2.(violation));

@@ -1,18 +1,27 @@
 package com.example.shop.controller;
 
+import com.example.shop.ShopApplication;
+import com.example.shop.config.UsecaseConfig;
 import com.example.shop.domain.dto.UserDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = {ShopApplication.class, UsecaseConfig.class, GlobalExceptionHandler.class}
+)
 public class UserControllerTest {
+    @BeforeEach
+    void setUp() {
+        RestAssured.baseURI = "http://localhost";
+    }
+
     @Test
     void givenValidUserDTO_whenCreateUser_thenReturns200AndUser() {
         UserDTO dto = UserDTO.builder()

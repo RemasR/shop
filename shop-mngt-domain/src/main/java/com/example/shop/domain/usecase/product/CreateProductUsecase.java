@@ -10,15 +10,15 @@ import java.util.UUID;
 public class CreateProductUsecase {
 
     private final ProductRepository productRepository;
-    private final ValidationExecutor<ProductDTO> validationExecutor;
+    private final ValidationExecutor<Product> validationExecutor;
 
-    public CreateProductUsecase(ProductRepository productRepository, ValidationExecutor<ProductDTO> validationExecutor) {
+    public CreateProductUsecase(ProductRepository productRepository, ValidationExecutor<Product> validationExecutor) {
         this.productRepository = productRepository;
         this.validationExecutor = validationExecutor;
     }
 
     public Product execute(ProductDTO dto) {
-        validationExecutor.validateAndThrow(dto);
+
 
         Product product = Product.builder()
                 .id(UUID.randomUUID().toString())
@@ -27,6 +27,7 @@ public class CreateProductUsecase {
                 .description(dto.getDescription())
                 .build();
 
+        validationExecutor.validateAndThrow(product);
         return productRepository.save(product);
     }
 }

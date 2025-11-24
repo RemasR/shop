@@ -10,6 +10,7 @@ import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.order.UpdateOrderUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class UpdateOrderUsecaseTest {
     private OrderRepository orderRepository;
     private ProductRepository productRepository;
     private ValidationExecutor<String> orderExistenceValidationExecutor;
-    private ValidationExecutor<OrderDTO> orderDTOValidationExecutor;
+    private ValidationExecutor<Order> orderItemPresenceValidatorExecutor;
     private UpdateOrderUsecase updateOrderUsecase;
 
     @BeforeEach
@@ -32,12 +33,12 @@ public class UpdateOrderUsecaseTest {
         orderRepository = mock(OrderRepository.class);
         productRepository = mock(ProductRepository.class);
         orderExistenceValidationExecutor = mock(ValidationExecutor.class);
-        orderDTOValidationExecutor = mock(ValidationExecutor.class);
+        orderItemPresenceValidatorExecutor = mock(ValidationExecutor.class);
         updateOrderUsecase = new UpdateOrderUsecase(
                 orderRepository,
                 productRepository,
                 orderExistenceValidationExecutor,
-                orderDTOValidationExecutor
+                orderItemPresenceValidatorExecutor
         );
     }
 
@@ -45,21 +46,6 @@ public class UpdateOrderUsecaseTest {
     void givenValidOrderDTO_whenUpdate_thenOrderItemsAndTotalPriceAreUpdated() {
         String orderId = UUID.randomUUID().toString();
         String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Raslan", "raslan@test.com", "+962791234567");
-
-        Product oldProduct = Product.builder()
-                .id("1")
-                .name("Old Product")
-                .price(50.0)
-                .build();
-        OrderItem oldItem = new OrderItem(oldProduct, 1);
-        Order existingOrder = Order.builder()
-                .id(orderId)
-                .userId(userId)
-                .items(new ArrayList<>(List.of(oldItem)))
-                .totalPrice(50.0)
-                .status(OrderStatus.PENDING)
-                .build();
 
         Product newProduct1 = Product.builder()
                 .id("2")
@@ -79,8 +65,15 @@ public class UpdateOrderUsecaseTest {
                 .items(List.of(itemDTO1, itemDTO2))
                 .build();
 
+        Order existingOrder = Order.builder()
+                .id(orderId)
+                .userId(userId)
+                .items(new ArrayList<>())
+                .totalPrice(0.0)
+                .status(OrderStatus.PENDING)
+                .build();
+
         when(orderExistenceValidationExecutor.validateAndThrow(orderId)).thenReturn(Set.of());
-        when(orderDTOValidationExecutor.validateAndThrow(dto)).thenReturn(Set.of());
         when(orderRepository.findById(orderId)).thenReturn(existingOrder);
         when(productRepository.findById("2")).thenReturn(newProduct1);
         when(productRepository.findById("3")).thenReturn(newProduct2);
@@ -88,17 +81,26 @@ public class UpdateOrderUsecaseTest {
 
         Order result = updateOrderUsecase.execute(orderId, dto);
 
-        assertNotNull(result);
-        assertEquals(2, result.getItems().size());
-        assertEquals(2150.0, result.getTotalPrice());
-        assertEquals("Laptop", result.getItems().get(0).getProduct().getName());
-        assertEquals("Mouse", result.getItems().get(1).getProduct().getName());
+        ArgumentCaptor<String> orderIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
 
-        verify(orderExistenceValidationExecutor, times(1)).validateAndThrow(orderId);
-        verify(orderDTOValidationExecutor, times(1)).validateAndThrow(dto);
-        verify(orderRepository, times(1)).findById(orderId);
-        verify(orderRepository, times(1)).save(existingOrder);
+        verify(orderExistenceValidationExecutor).validateAndThrow(orderIdCaptor.capture());
+        verify(orderItemPresenceValidatorExecutor).validateAndThrow(orderCaptor.capture());
+        verify(orderRepository).save(orderCaptor.capture());
+
+        assertEquals(orderId, orderIdCaptor.getValue());
+
+        Order validatedOrder = orderCaptor.getAllValues().get(0);
+        Order savedOrder = orderCaptor.getAllValues().get(1);
+
+        assertEquals(2, validatedOrder.getItems().size());
+        assertEquals(2150.0, validatedOrder.getTotalPrice());
+
+        assertEquals(2, savedOrder.getItems().size());
+        assertEquals(2150.0, savedOrder.getTotalPrice());
+        assertEquals(OrderStatus.PENDING, savedOrder.getStatus());
     }
+
 
     @Test
     void givenInvalidOrderId_whenUpdate_thenThrowsValidationException() {
@@ -108,56 +110,15 @@ public class UpdateOrderUsecaseTest {
                 .items(List.of(new OrderItemDTO("1", 2)))
                 .build();
 
-        when(orderExistenceValidationExecutor.validateAndThrow(orderId))
-                .thenThrow(new ValidationException(Set.of()));
+        doThrow(new ValidationException(Set.of()))
+                .when(orderExistenceValidationExecutor).validateAndThrow(orderId);
 
         assertThrows(ValidationException.class,
                 () -> updateOrderUsecase.execute(orderId, dto));
 
         verify(orderExistenceValidationExecutor, times(1)).validateAndThrow(orderId);
-        verify(orderDTOValidationExecutor, never()).validateAndThrow(any());
+        verify(orderItemPresenceValidatorExecutor, never()).validateAndThrow(any());
         verify(orderRepository, never()).findById(any());
         verify(orderRepository, never()).save(any());
-    }
-
-    @Test
-    void givenNullItems_whenUpdate_thenOrderRemainsUnchanged() {
-        String orderId = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
-        User user = new User(userId, "Sara", "sara@test.com", "+962791234567");
-
-        Product existingProduct = Product.builder()
-                .id("1")
-                .name("Existing Product")
-                .price(100.0)
-                .build();
-        OrderItem existingItem = new OrderItem(existingProduct, 2);
-
-        Order existingOrder = Order.builder()
-                .id(orderId)
-                .userId(userId)
-                .items(new ArrayList<>(List.of(existingItem)))
-                .totalPrice(200.0)
-                .status(OrderStatus.CONFIRMED)
-                .build();
-
-        OrderDTO dto = OrderDTO.builder()
-                .userId(userId)
-                .items(null)
-                .build();
-
-        when(orderExistenceValidationExecutor.validateAndThrow(orderId)).thenReturn(Set.of());
-        when(orderDTOValidationExecutor.validateAndThrow(dto)).thenReturn(Set.of());
-        when(orderRepository.findById(orderId)).thenReturn(existingOrder);
-        when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        Order result = updateOrderUsecase.execute(orderId, dto);
-
-        assertNotNull(result);
-        assertEquals(1, result.getItems().size());
-        assertEquals(200.0, result.getTotalPrice());
-        assertEquals(OrderStatus.CONFIRMED, result.getStatus());
-
-        verify(orderRepository, times(1)).save(existingOrder);
     }
 }

@@ -1,8 +1,6 @@
 package com.example.shop.config;
 
-import com.example.shop.domain.dto.OrderDTO;
-import com.example.shop.domain.dto.ProductDTO;
-import com.example.shop.domain.dto.UserDTO;
+import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
@@ -20,8 +18,8 @@ public class UsecaseConfig {
 
     @Bean
     public CreateUserUsecase createUserUsecase(UserRepository userRepository,
-                                               ValidationExecutor<UserDTO> userDTOValidationExecutor) {
-        return new CreateUserUsecase(userRepository, userDTOValidationExecutor);
+                                               ValidationExecutor<User> userValidationExecutor) {
+        return new CreateUserUsecase(userRepository, userValidationExecutor);
     }
 
     @Bean
@@ -50,8 +48,8 @@ public class UsecaseConfig {
 
     @Bean
     public CreateProductUsecase createProductUsecase(ProductRepository productRepository,
-                                                     ValidationExecutor<ProductDTO> productDTOValidationExecutor) {
-        return new CreateProductUsecase(productRepository, productDTOValidationExecutor);
+                                                     ValidationExecutor<Product> productValidationExecutor) {
+        return new CreateProductUsecase(productRepository, productValidationExecutor);
     }
 
     @Bean
@@ -81,18 +79,18 @@ public class UsecaseConfig {
     @Bean
     public CreateOrderUsecase createOrderUsecase(OrderRepository orderRepository,
                                                  ProductRepository productRepository,
-                                                 ValidationExecutor<OrderDTO> orderDTOValidationExecutor) {
-        return new CreateOrderUsecase(orderRepository, productRepository, orderDTOValidationExecutor);
+                                                 ValidationExecutor<Order> orderValidationExecutor) {
+        return new CreateOrderUsecase(orderRepository, productRepository, orderValidationExecutor);
     }
 
     @Bean
     public UpdateOrderUsecase updateOrderUsecase(OrderRepository orderRepository,
                                                  ProductRepository productRepository,
                                                  ValidationExecutor<String> orderExistenceValidationExecutor,
-                                                 ValidationExecutor<OrderDTO> orderDTOValidationExecutor) {
+                                                 ValidationExecutor<Order> orderItemPresenceValidatorExecutor) {
         return new UpdateOrderUsecase(orderRepository, productRepository,
                 orderExistenceValidationExecutor,
-                orderDTOValidationExecutor);
+                orderItemPresenceValidatorExecutor);
     }
 
     @Bean

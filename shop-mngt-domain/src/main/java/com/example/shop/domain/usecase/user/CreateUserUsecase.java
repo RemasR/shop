@@ -9,15 +9,14 @@ import java.util.UUID;
 
 public class CreateUserUsecase {
     private final UserRepository userRepository;
-    private final ValidationExecutor<UserDTO> validationExecutor;
+    private final ValidationExecutor<User> validationExecutor;
 
-    public CreateUserUsecase(UserRepository userRepository, ValidationExecutor<UserDTO> validationExecutor) {
+    public CreateUserUsecase(UserRepository userRepository, ValidationExecutor<User> validationExecutor) {
         this.userRepository = userRepository;
         this.validationExecutor = validationExecutor;
     }
 
     public User execute(UserDTO dto) {
-        validationExecutor.validateAndThrow(dto);
 
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
@@ -25,7 +24,7 @@ public class CreateUserUsecase {
                 .email(dto.getEmail())
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
-
+        validationExecutor.validateAndThrow(user);
 
         return userRepository.save(user);
     }

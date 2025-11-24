@@ -2,7 +2,7 @@ package com.example.shop.config;
 
 import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.ProductDTO;
-import com.example.shop.domain.dto.UserDTO;
+import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
@@ -25,12 +25,6 @@ import java.util.List;
 public class ValidatorConfig {
 
     @Bean
-    public ValidationExecutor<UserDTO> userDTOValidationExecutor() {
-        List<Validator<UserDTO>> validators = List.of();
-        return new ValidationExecutor<>(validators);
-    }
-
-    @Bean
     public ValidationExecutor<User> userValidationExecutor(UserRepository userRepository) {
         List<Validator<User>> validators = List.of(
                 new UsernameValidator(),
@@ -48,13 +42,6 @@ public class ValidatorConfig {
         );
         return new ValidationExecutor<>(validators);
     }
-
-    @Bean
-    public ValidationExecutor<ProductDTO> productDTOValidationExecutor() {
-        List<Validator<ProductDTO>> validators = List.of();
-        return new ValidationExecutor<>(validators);
-    }
-
     @Bean
     public ValidationExecutor<Product> productValidationExecutor() {
         List<Validator<Product>> validators = List.of(
@@ -73,9 +60,9 @@ public class ValidatorConfig {
     }
 
     @Bean
-    public ValidationExecutor<OrderDTO> orderDTOValidationExecutor(UserRepository userRepository,
-                                                                   ProductRepository productRepository) {
-        List<Validator<OrderDTO>> validators = List.of(
+    public ValidationExecutor<Order> orderItemPresenceValidatorExecutor(UserRepository userRepository,
+                                                                ProductRepository productRepository) {
+        List<Validator<Order>> validators = List.of(
                 new ItemsPresenceValidator(userRepository, productRepository)
         );
         return new ValidationExecutor<>(validators);

@@ -5,15 +5,14 @@ import com.example.shop.domain.dto.OrderItemDTO;
 import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.entity.Product;
-import com.example.shop.domain.entity.User;
-import com.example.shop.domain.repository.OrderRepository;
-import com.example.shop.domain.repository.ProductRepository;
-import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.ValidationExecutor;
+import com.example.shop.domain.repository.OrderRepository;
+import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.usecase.order.CreateOrderUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class CreateOrderUsecaseTest {
 
     private OrderRepository orderRepository;
     private ProductRepository productRepository;
-    private ValidationExecutor<OrderDTO> validationExecutor;
+    private ValidationExecutor<Order> validationExecutor;
     private CreateOrderUsecase createOrderUsecase;
 
     @BeforeEach
@@ -38,7 +37,7 @@ public class CreateOrderUsecaseTest {
     }
 
     @Test
-    void givenValidOrderDTO_whenExecute_thenOrderIsCreated() {
+    void givenValidOrderDTO_whenExecute_thenOrderIsCreatedAndValidated() {
         String userId = UUID.randomUUID().toString();
 
         Product product = Product.builder()
@@ -54,7 +53,6 @@ public class CreateOrderUsecaseTest {
                 .items(List.of(itemDTO))
                 .build();
 
-        when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
         when(productRepository.findById("1")).thenReturn(product);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -66,8 +64,15 @@ public class CreateOrderUsecaseTest {
         assertEquals(2000.0, result.getTotalPrice());
         assertEquals(OrderStatus.PENDING, result.getStatus());
 
-        verify(validationExecutor, times(1)).validateAndThrow(orderDTO);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(validationExecutor, times(1)).validateAndThrow(orderCaptor.capture());
         verify(orderRepository, times(1)).save(any(Order.class));
+
+        Order validatedOrder = orderCaptor.getValue();
+        assertEquals(userId, validatedOrder.getUserId());
+        assertEquals(1, validatedOrder.getItems().size());
+        assertEquals(2000.0, validatedOrder.getTotalPrice());
+        assertEquals(OrderStatus.PENDING, validatedOrder.getStatus());
     }
 
     @Test
@@ -84,7 +89,6 @@ public class CreateOrderUsecaseTest {
                 .items(List.of(item1, item2))
                 .build();
 
-        when(validationExecutor.validateAndThrow(orderDTO)).thenReturn(Set.of());
         when(productRepository.findById("1")).thenReturn(product1);
         when(productRepository.findById("2")).thenReturn(product2);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -93,6 +97,11 @@ public class CreateOrderUsecaseTest {
 
         assertEquals(2150.0, result.getTotalPrice());
         assertEquals(2, result.getItems().size());
+
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(validationExecutor, times(1)).validateAndThrow(orderCaptor.capture());
+        Order validatedOrder = orderCaptor.getValue();
+        assertEquals(2150.0, validatedOrder.getTotalPrice());
     }
 
     @Test
@@ -102,11 +111,15 @@ public class CreateOrderUsecaseTest {
                 .items(List.of())
                 .build();
 
-        when(validationExecutor.validateAndThrow(orderDTO))
-                .thenThrow(new ValidationException(Set.of()));
+        doThrow(new ValidationException(Set.of()))
+                .when(validationExecutor).validateAndThrow(any(Order.class));
 
-        assertThrows(ValidationException.class, () -> createOrderUsecase.execute(orderDTO));
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> createOrderUsecase.execute(orderDTO)
+        );
 
         verify(orderRepository, never()).save(any(Order.class));
+        verify(validationExecutor, times(1)).validateAndThrow(any(Order.class));
     }
 }

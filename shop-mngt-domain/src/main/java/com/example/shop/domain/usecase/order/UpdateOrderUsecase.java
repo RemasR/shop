@@ -18,21 +18,20 @@ public class UpdateOrderUsecase {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final ValidationExecutor<String> orderExistenceValidationExecutor;
-    private final ValidationExecutor<OrderDTO> orderDTOValidationExecutor;
+    private final ValidationExecutor<Order> orderItemPresenceValidatorExecutor;
 
     public UpdateOrderUsecase(OrderRepository orderRepository,
                               ProductRepository productRepository,
                               ValidationExecutor<String> orderExistenceValidationExecutor,
-                              ValidationExecutor<OrderDTO> orderDTOValidationExecutor) {
+                              ValidationExecutor<Order> orderItemPresenceValidatorExecutor) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.orderExistenceValidationExecutor = orderExistenceValidationExecutor;
-        this.orderDTOValidationExecutor = orderDTOValidationExecutor;
+        this.orderItemPresenceValidatorExecutor = orderItemPresenceValidatorExecutor;
     }
 
     public Order execute(String orderId, OrderDTO dto) {
         orderExistenceValidationExecutor.validateAndThrow(orderId);
-        orderDTOValidationExecutor.validateAndThrow(dto);
 
         Order order = orderRepository.findById(orderId);
 
@@ -50,6 +49,7 @@ public class UpdateOrderUsecase {
             order.setItems(newOrderItems);
             order.setTotalPrice(newTotalPrice);
         }
+        orderItemPresenceValidatorExecutor.validateAndThrow(order);
 
         return orderRepository.save(order);
     }
