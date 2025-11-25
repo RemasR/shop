@@ -1,43 +1,44 @@
-package com.example.shop.repository;
+package com.example.shop.repository.repoImpl;
 
 import com.example.shop.domain.entity.Product;
 import com.example.shop.domain.repository.ProductRepository;
+import com.example.shop.repository.jpa.SpringDataProductRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Repository
+@Primary
 public class JpaProductRepository implements ProductRepository {
+    private SpringDataProductRepository springDataRepository;
 
-    private final Map<String, Product> productStore = new HashMap<>();
+    public JpaProductRepository(SpringDataProductRepository springDataRepository) {
+        this.springDataRepository = springDataRepository;
+    }
 
     @Override
     public Product save(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null");
-        }
-        productStore.put(product.getId(), product);
-        return product;
+        return springDataRepository.save(product);
     }
 
     @Override
     public Product findById(String id) {
-        return productStore.get(id);
+        return springDataRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Product> findAllProducts() {
-        return new ArrayList<>(productStore.values());
+        return springDataRepository.findAll();
     }
 
     @Override
     public void deleteById(String id) {
-        productStore.remove(id);
+        springDataRepository.deleteById(id);
     }
 
     @Override
     public boolean existsById(String id) {
-        return productStore.containsKey(id);
+      return springDataRepository.existsById(id);
     }
 }

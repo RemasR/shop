@@ -1,74 +1,59 @@
-package com.example.shop.repository;
+package com.example.shop.repository.repoImpl;
 
 import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderStatus;
 import com.example.shop.domain.repository.OrderRepository;
+import com.example.shop.repository.jpa.SpringDataOrderRepository;
+import com.example.shop.repository.jpa.SpringDataProductRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
+@Primary
 public class JpaOrderRepository implements OrderRepository {
+    private SpringDataOrderRepository springDataRepository;
 
-    private final Map<String, Order> orderStore = new HashMap<>();
+    public JpaOrderRepository(SpringDataOrderRepository springDataRepository) {
+        this.springDataRepository = springDataRepository;
+    }
 
     @Override
     public Order save(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Order cannot be null");
-        }
-        orderStore.put(order.getId(), order);
-        return order;
+       return springDataRepository.save(order);
     }
 
     @Override
     public Order findById(String id) {
-        return orderStore.get(id);
+        return springDataRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Order> findAllOrders() {
-        return new ArrayList<>(orderStore.values());
+        return springDataRepository.findAll();
     }
 
     @Override
     public List<Order> findByUserId(String userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
-
-        List<Order> result = new ArrayList<>();
-        for (Order order : orderStore.values()) {
-            if (order.getUserId().equals(userId)) {
-                result.add(order);
-            }
-        }
-        return result;
+        return springDataRepository.findByUserId(userId);
     }
 
     @Override
     public List<Order> findByStatus(OrderStatus status) {
-        if (status == null) {
-            throw new IllegalArgumentException("Status cannot be null");
-        }
-
-        List<Order> result = new ArrayList<>();
-        for (Order order : orderStore.values()) {
-            if (order.getStatus() == status) {
-                result.add(order);
-            }
-        }
-        return result;
+       return springDataRepository.findByStatus(status);
     }
 
     @Override
     public void deleteById(String id) {
-        orderStore.remove(id);
+        springDataRepository.deleteById(id);
     }
 
     @Override
     public boolean existsById(String id) {
-        return orderStore.containsKey(id);
+        return springDataRepository.existsById(id);
     }
 }

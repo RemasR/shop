@@ -1,65 +1,50 @@
-package com.example.shop.repository;
+package com.example.shop.repository.repoImpl;
 
 import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.UserRepository;
+import com.example.shop.repository.jpa.SpringDataUserRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@Primary
 public class JpaUserRepository implements UserRepository {
 
-    private final List<User> users = new ArrayList<>();
+    private final SpringDataUserRepository springDataRepository;
+
+    public JpaUserRepository(SpringDataUserRepository springDataRepository) {
+        this.springDataRepository = springDataRepository;
+    }
 
     @Override
     public User save(User user) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId().equals(user.getId())) {
-                users.set(i, user);
-                return user;
-            }
-        }
-
-        users.add(user);
-        return user;
+        return springDataRepository.save(user);
     }
 
     @Override
     public User findById(String id) {
-        for (User u : users) {
-            if (u.getId().equals(id)) {
-                return u;
-            }
-        }
-        return null;
+        return springDataRepository.findById(id).orElse(null);
     }
 
     @Override
     public User findByEmail(String email) {
-        for (User u : users) {
-            if (u.getEmail().equals(email)) {
-                return u;
-            }
-        }
-        return null;
+        return springDataRepository.findByEmail(email);
     }
 
     @Override
     public List<User> findAllUsers() {
-        return new ArrayList<>(users);
+        return springDataRepository.findAll();
     }
 
     @Override
     public void deleteById(String id) {
-        users.removeIf(user -> user.getId().equals(id));
+        springDataRepository.deleteById(id);
     }
 
     @Override
     public boolean existsById(String id) {
-        for (User u : users) {
-            if (u.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
+        return springDataRepository.existsById(id);
     }
 }
