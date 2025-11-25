@@ -1,7 +1,5 @@
 package com.example.shop.controller;
 
-import com.example.shop.ShopApplication;
-import com.example.shop.config.UsecaseConfig;
 import com.example.shop.domain.dto.UserDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -9,13 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {ShopApplication.class, UsecaseConfig.class, GlobalExceptionHandler.class}
-)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
     @BeforeEach
     void setUp() {

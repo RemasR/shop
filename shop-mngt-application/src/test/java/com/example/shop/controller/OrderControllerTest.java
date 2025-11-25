@@ -1,7 +1,5 @@
 package com.example.shop.controller;
 
-import com.example.shop.ShopApplication;
-import com.example.shop.config.UsecaseConfig;
 import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.OrderItemDTO;
 import com.example.shop.domain.dto.ProductDTO;
@@ -17,10 +15,7 @@ import java.util.List;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {ShopApplication.class, UsecaseConfig.class, GlobalExceptionHandler.class}
-)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OrderControllerTest {
     @BeforeEach
     void setUp() {
