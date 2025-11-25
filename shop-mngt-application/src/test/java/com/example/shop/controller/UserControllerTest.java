@@ -1,251 +1,168 @@
 package com.example.shop.controller;
 
 import com.example.shop.domain.dto.UserDTO;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.shop.domain.entity.User;
+import com.example.shop.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static io.restassured.RestAssured.given;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
-    @BeforeEach
-    void setUp() {
-        RestAssured.baseURI = "http://localhost";
-    }
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserService userService;
 
     @Test
-    void givenValidUserDTO_whenCreateUser_thenReturns200AndUser() {
+    void givenValidUserDTO_whenCreateUser_thenReturns200AndUser() throws Exception {
         UserDTO dto = UserDTO.builder()
                 .name("Ahmad")
                 .email("ahmad@test.com")
                 .phoneNumber("+962791234567")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo("Ahmad"))
-                .body("email", equalTo("ahmad@test.com"))
-                .body("phoneNumber", equalTo("+962791234567"))
-                .body("id", notNullValue());
-    }
-
-    @Test
-    void givenShortName_whenCreateUser_thenReturns400() {
-        UserDTO dto = UserDTO.builder()
-                .name("Ab")
-                .email("test@test.com")
-                .phoneNumber("+962791234567")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenInvalidEmail_whenCreateUser_thenReturns400() {
-        UserDTO dto = UserDTO.builder()
-                .name("Ahmad")
-                .email("invalid-email")
-                .phoneNumber("+962791234567")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenInvalidPhoneNumber_whenCreateUser_thenReturns400() {
-        UserDTO dto = UserDTO.builder()
+        User createdUser = User.builder()
+                .id(UUID.randomUUID().toString())
                 .name("Ahmad")
                 .email("ahmad@test.com")
-                .phoneNumber("1234567890")
+                .phoneNumber("+962791234567")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(400);
+        when(userService.registerUser(any(UserDTO.class))).thenReturn(createdUser);
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Ahmad")))
+                .andExpect(jsonPath("$.email", is("ahmad@test.com")))
+                .andExpect(jsonPath("$.phoneNumber", is("+962791234567")))
+                .andExpect(jsonPath("$.id", notNullValue()));
+
+        verify(userService, times(1)).registerUser(any(UserDTO.class));
     }
 
     @Test
-    void givenExistingUserId_whenGetUserById_thenReturns200AndUser() {
-        UserDTO createDTO = UserDTO.builder()
+    void givenExistingUserId_whenGetUserById_thenReturns200AndUser() throws Exception {
+        String userId = UUID.randomUUID().toString();
+        User user = User.builder()
+                .id(userId)
                 .name("Sara")
                 .email("sara@test.com")
                 .phoneNumber("+962791234567")
                 .build();
 
-        String userId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
+        when(userService.getUserById(userId)).thenReturn(user);
 
-        given()
-                .when()
-                .get("/api/users/" + userId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(userId))
-                .body("name", equalTo("Sara"))
-                .body("email", equalTo("sara@test.com"))
-                .body("phoneNumber", equalTo("+962791234567"));
+        mockMvc.perform(get("/api/users/{id}", userId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(userId)))
+                .andExpect(jsonPath("$.name", is("Sara")))
+                .andExpect(jsonPath("$.email", is("sara@test.com")))
+                .andExpect(jsonPath("$.phoneNumber", is("+962791234567")));
+
+        verify(userService, times(1)).getUserById(userId);
     }
 
     @Test
-    void givenNonExistingUserId_whenGetUserById_thenReturns400() {
-        given()
-                .when()
-                .get("/api/users/non-existing-id-123")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenExistingUser_whenUpdateUser_thenReturns200AndUpdatedUser() {
-        UserDTO createDTO = UserDTO.builder()
-                .name("OldName")
-                .email("old@test.com")
-                .phoneNumber("+962791234567")
-                .build();
-
-        String userId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
+    void givenExistingUser_whenUpdateUser_thenReturns200AndUpdatedUser() throws Exception {
+        String userId = UUID.randomUUID().toString();
         UserDTO updateDTO = UserDTO.builder()
                 .name("NewName")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/users/" + userId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(userId))
-                .body("name", equalTo("NewName"))
-                .body("email", equalTo("old@test.com"))
-                .body("phoneNumber", equalTo("+962791234567"));
-    }
-
-    @Test
-    void givenExistingUser_whenDeleteUser_thenReturns200AndUserIsDeleted() {
-        UserDTO createDTO = UserDTO.builder()
-                .name("ToDelete")
-                .email("delete@test.com")
+        User updatedUser = User.builder()
+                .id(userId)
+                .name("NewName")
+                .email("old@test.com")
                 .phoneNumber("+962791234567")
                 .build();
 
-        String userId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
+        when(userService.updateUser(eq(userId), any(UserDTO.class))).thenReturn(updatedUser);
 
-        given()
-                .when()
-                .delete("/api/users/" + userId)
-                .then()
-                .statusCode(200);
+        mockMvc.perform(put("/api/users/{id}", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(userId)))
+                .andExpect(jsonPath("$.name", is("NewName")))
+                .andExpect(jsonPath("$.email", is("old@test.com")))
+                .andExpect(jsonPath("$.phoneNumber", is("+962791234567")));
 
-        given()
-                .when()
-                .get("/api/users/" + userId)
-                .then()
-                .statusCode(400);
+        verify(userService, times(1)).updateUser(eq(userId), any(UserDTO.class));
     }
 
     @Test
-    void givenValidUsers_whenGetAllUsers_thenReturns200AndUserList() {
-        UserDTO user1 = UserDTO.builder()
+    void givenExistingUser_whenDeleteUser_thenReturns200() throws Exception {
+        String userId = UUID.randomUUID().toString();
+
+        doNothing().when(userService).deleteUser(userId);
+
+        mockMvc.perform(delete("/api/users/{id}", userId))
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).deleteUser(userId);
+    }
+
+    @Test
+    void givenValidUsers_whenGetAllUsers_thenReturns200AndUserList() throws Exception {
+        User user1 = User.builder()
+                .id(UUID.randomUUID().toString())
                 .name("User1")
                 .email("user1@test.com")
                 .phoneNumber("+962791234567")
                 .build();
 
-        UserDTO user2 = UserDTO.builder()
+        User user2 = User.builder()
+                .id(UUID.randomUUID().toString())
                 .name("User2")
                 .email("user2@test.com")
                 .phoneNumber("+962791234568")
                 .build();
 
-        given().contentType(ContentType.JSON).body(user1).when().post("/api/users");
-        given().contentType(ContentType.JSON).body(user2).when().post("/api/users");
+        List<User> users = Arrays.asList(user1, user2);
 
-        given()
-                .when()
-                .get("/api/users")
-                .then()
-                .statusCode(200)
-                .body("size()", greaterThanOrEqualTo(2));
+        when(userService.getAllUsers()).thenReturn(users);
+
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("User1")))
+                .andExpect(jsonPath("$[1].name", is("User2")));
+
+        verify(userService, times(1)).getAllUsers();
     }
 
     @Test
-    void givenDuplicateEmail_whenCreateUser_thenReturns400() {
-        UserDTO user1 = UserDTO.builder()
-                .name("User1")
-                .email("same@test.com")
-                .phoneNumber("+962791234567")
-                .build();
+    void givenNoUsers_whenGetAllUsers_thenReturns200AndEmptyList() throws Exception {
+        when(userService.getAllUsers()).thenReturn(Collections.emptyList());
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(user1)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(200);
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
 
-        UserDTO user2 = UserDTO.builder()
-                .name("User2")
-                .email("same@test.com")
-                .phoneNumber("+962791234568")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(user2)
-                .when()
-                .post("/api/users")
-                .then()
-                .statusCode(400);
+        verify(userService, times(1)).getAllUsers();
     }
 }

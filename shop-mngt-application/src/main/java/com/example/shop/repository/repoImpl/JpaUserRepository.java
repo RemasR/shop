@@ -6,7 +6,7 @@ import com.example.shop.domain.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemoryUserRepository implements UserRepository {
+public class JpaUserRepository implements UserRepository {
 
     private final List<User> users = new ArrayList<>();
 

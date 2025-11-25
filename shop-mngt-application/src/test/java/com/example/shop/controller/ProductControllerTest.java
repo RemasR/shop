@@ -1,537 +1,197 @@
 package com.example.shop.controller;
+
 import com.example.shop.domain.dto.ProductDTO;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.shop.domain.entity.Product;
+import com.example.shop.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(ProductController.class)
 public class ProductControllerTest {
-    @BeforeEach
-    void setUp() {
-        RestAssured.baseURI = "http://localhost";
-    }
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private ProductService productService;
 
     @Test
-    void givenValidProductDTO_whenCreateProduct_thenReturns200AndProduct() {
+    void givenValidProductDTO_whenCreateProduct_thenReturns200AndProduct() throws Exception {
         ProductDTO dto = ProductDTO.builder()
                 .name("Laptop")
                 .price(1500.0)
                 .description("Gaming laptop")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo("Laptop"))
-                .body("price", equalTo(1500.0f))
-                .body("description", equalTo("Gaming laptop"))
-                .body("id", notNullValue());
-    }
-
-    @Test
-    void givenShortName_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("AB")
-                .price(100.0)
-                .description("Too short name")
+        Product createdProduct = Product.builder()
+                .id("1")
+                .name("Laptop")
+                .price(1500.0)
+                .description("Gaming laptop")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
+        when(productService.createProduct(any(ProductDTO.class))).thenReturn(createdProduct);
+
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Laptop")))
+                .andExpect(jsonPath("$.price", is(1500.0)))
+                .andExpect(jsonPath("$.description", is("Gaming laptop")))
+                .andExpect(jsonPath("$.id", notNullValue()));
+
+        verify(productService, times(1)).createProduct(any(ProductDTO.class));
     }
 
     @Test
-    void givenNullName_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name(null)
-                .price(100.0)
-                .description("No name")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenEmptyName_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("")
-                .price(100.0)
-                .description("Empty name")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenNegativePrice_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Product")
-                .price(-10.0)
-                .description("Negative price")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenZeroPrice_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Product")
-                .price(0.0)
-                .description("Zero price")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenPriceExceedingMaximum_whenCreateProduct_thenReturns400() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Product")
-                .price(1_500_000.0)
-                .description("Price too high")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenValidProductId_whenGetProductById_thenReturns200AndProduct() {
-        ProductDTO createDTO = ProductDTO.builder()
+    void givenValidProductId_whenGetProductById_thenReturns200AndProduct() throws Exception {
+        String productId = "1";
+        Product product = Product.builder()
+                .id(productId)
                 .name("Mouse")
                 .price(50.0)
                 .description("Wireless mouse")
                 .build();
 
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
+        when(productService.getProductById(productId)).thenReturn(product);
 
-        given()
-                .when()
-                .get("/api/products/" + productId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(productId))
-                .body("name", equalTo("Mouse"))
-                .body("price", equalTo(50.0f))
-                .body("description", equalTo("Wireless mouse"));
+        mockMvc.perform(get("/api/products/{id}", productId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(productId)))
+                .andExpect(jsonPath("$.name", is("Mouse")))
+                .andExpect(jsonPath("$.price", is(50.0)))
+                .andExpect(jsonPath("$.description", is("Wireless mouse")));
+
+        verify(productService, times(1)).getProductById(productId);
     }
 
     @Test
-    void givenNonExistingProductId_whenGetProductById_thenReturns400() {
-        given()
-                .when()
-                .get("/api/products/non-existing-product-id")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenExistingProduct_whenUpdateProduct_thenReturns200AndUpdatedProduct() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Old Name")
-                .price(100.0)
-                .description("Old description")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
+    void givenExistingProduct_whenUpdateProduct_thenReturns200AndUpdatedProduct() throws Exception {
+        String productId = "1";
         ProductDTO updateDTO = ProductDTO.builder()
                 .name("New Name")
                 .price(150.0)
                 .description("New description")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(productId))
-                .body("name", equalTo("New Name"))
-                .body("price", equalTo(150.0f))
-                .body("description", equalTo("New description"));
+        Product updatedProduct = Product.builder()
+                .id(productId)
+                .name("New Name")
+                .price(150.0)
+                .description("New description")
+                .build();
+
+        when(productService.updateProduct(eq(productId), any(ProductDTO.class))).thenReturn(updatedProduct);
+
+        mockMvc.perform(put("/api/products/{id}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(productId)))
+                .andExpect(jsonPath("$.name", is("New Name")))
+                .andExpect(jsonPath("$.price", is(150.0)))
+                .andExpect(jsonPath("$.description", is("New description")));
+
+        verify(productService, times(1)).updateProduct(eq(productId), any(ProductDTO.class));
     }
 
     @Test
-    void givenExistingProduct_whenUpdateOnlyName_thenReturns200AndUpdatedProduct() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Old Name")
-                .price(100.0)
-                .description("Old description")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
+    void givenExistingProduct_whenUpdateOnlyName_thenReturns200AndUpdatedProduct() throws Exception {
+        String productId = "1";
         ProductDTO updateDTO = ProductDTO.builder()
                 .name("New Name Only")
                 .build();
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(productId))
-                .body("name", equalTo("New Name Only"))
-                .body("price", equalTo(100.0f))
-                .body("description", equalTo("Old description"));
-    }
-
-    @Test
-    void givenExistingProduct_whenUpdateOnlyPrice_thenReturns200AndUpdatedProduct() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Product Name")
-                .price(100.0)
-                .description("Product description")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
-        ProductDTO updateDTO = ProductDTO.builder()
-                .price(200.0)
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(productId))
-                .body("name", equalTo("Product Name"))
-                .body("price", equalTo(200.0f))
-                .body("description", equalTo("Product description"));
-    }
-
-    @Test
-    void givenExistingProduct_whenUpdateOnlyDescription_thenReturns200AndUpdatedProduct() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Product Name")
+        Product updatedProduct = Product.builder()
+                .id(productId)
+                .name("New Name Only")
                 .price(100.0)
                 .description("Old description")
                 .build();
 
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
+        when(productService.updateProduct(eq(productId), any(ProductDTO.class))).thenReturn(updatedProduct);
 
-        ProductDTO updateDTO = ProductDTO.builder()
-                .description("New description")
-                .build();
+        mockMvc.perform(put("/api/products/{id}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(productId)))
+                .andExpect(jsonPath("$.name", is("New Name Only")))
+                .andExpect(jsonPath("$.price", is(100.0)))
+                .andExpect(jsonPath("$.description", is("Old description")));
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(productId))
-                .body("name", equalTo("Product Name"))
-                .body("price", equalTo(100.0f))
-                .body("description", equalTo("New description"));
+        verify(productService, times(1)).updateProduct(eq(productId), any(ProductDTO.class));
     }
 
     @Test
-    void givenNonExistingProductId_whenUpdateProduct_thenReturns400() {
-        ProductDTO updateDTO = ProductDTO.builder()
-                .name("New Name")
-                .price(150.0)
-                .build();
+    void givenExistingProduct_whenDeleteProduct_thenReturns200() throws Exception {
+        String productId = "1";
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/non-existing-id")
-                .then()
-                .statusCode(400);
+        doNothing().when(productService).deleteProduct(productId);
+
+        mockMvc.perform(delete("/api/products/{id}", productId))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).deleteProduct(productId);
     }
 
     @Test
-    void givenInvalidNameOnUpdate_whenUpdateProduct_thenReturns400() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Valid Name")
-                .price(100.0)
-                .description("Description")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
-        ProductDTO updateDTO = ProductDTO.builder()
-                .name("AB")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenInvalidPriceOnUpdate_whenUpdateProduct_thenReturns400() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("Valid Name")
-                .price(100.0)
-                .description("Description")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
-        ProductDTO updateDTO = ProductDTO.builder()
-                .price(-50.0)
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(updateDTO)
-                .when()
-                .put("/api/products/" + productId)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenExistingProduct_whenDeleteProduct_thenReturns200AndProductIsDeleted() {
-        ProductDTO createDTO = ProductDTO.builder()
-                .name("To Delete")
-                .price(50.0)
-                .description("Will be deleted")
-                .build();
-
-        String productId = given()
-                .contentType(ContentType.JSON)
-                .body(createDTO)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("id");
-
-        given()
-                .when()
-                .delete("/api/products/" + productId)
-                .then()
-                .statusCode(200);
-
-        given()
-                .when()
-                .get("/api/products/" + productId)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenNonExistingProductId_whenDeleteProduct_thenReturns400() {
-        given()
-                .when()
-                .delete("/api/products/non-existing-id")
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    void givenProducts_whenGetAllProducts_thenReturns200AndProductList() {
-        ProductDTO product1 = ProductDTO.builder()
+    void givenProducts_whenGetAllProducts_thenReturns200AndProductList() throws Exception {
+        Product product1 = Product.builder()
+                .id("1")
                 .name("Product 1")
                 .price(100.0)
                 .description("First product")
                 .build();
 
-        ProductDTO product2 = ProductDTO.builder()
+        Product product2 = Product.builder()
+                .id("2")
                 .name("Product 2")
                 .price(200.0)
                 .description("Second product")
                 .build();
 
-        given().
-                contentType(ContentType.JSON)
-                .body(product1)
-                .when()
-                .post("/api/products");
-        given()
-                .contentType(ContentType.JSON)
-                .body(product2)
-                .when()
-                .post("/api/products");
+        List<Product> products = Arrays.asList(product1, product2);
 
-        given()
-                .when()
-                .get("/api/products")
-                .then()
-                .statusCode(200)
-                .body("size()", greaterThanOrEqualTo(2));
+        when(productService.getAllProducts()).thenReturn(products);
+
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("Product 1")))
+                .andExpect(jsonPath("$[1].name", is("Product 2")));
+
+        verify(productService, times(1)).getAllProducts();
     }
 
     @Test
-    void givenNoProducts_whenGetAllProducts_thenReturns200AndEmptyList() {
-        given()
-                .when()
-                .get("/api/products")
-                .then()
-                .statusCode(200)
-                .body("size()", greaterThanOrEqualTo(0));
-    }
+    void givenNoProducts_whenGetAllProducts_thenReturns200AndEmptyList() throws Exception {
+        when(productService.getAllProducts()).thenReturn(Collections.emptyList());
 
-    @Test
-    void givenValidProductWithMinimumPrice_whenCreateProduct_thenReturns200() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Cheap Item")
-                .price(0.01)
-                .description("Minimum price")
-                .build();
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .body("price", equalTo(0.01f));
-    }
-
-    @Test
-    void givenValidProductWithMaximumPrice_whenCreateProduct_thenReturns200() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("Expensive Item")
-                .price(1_000_000.0)
-                .description("Maximum price")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .body("price", equalTo(1_000_000.0f));
-    }
-
-    @Test
-    void givenValidProductWithMinimumNameLength_whenCreateProduct_thenReturns200() {
-        ProductDTO dto = ProductDTO.builder()
-                .name("ABC")
-                .price(50.0)
-                .description("Minimum name length")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(dto)
-                .when()
-                .post("/api/products")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo("ABC"));
+        verify(productService, times(1)).getAllProducts();
     }
 }

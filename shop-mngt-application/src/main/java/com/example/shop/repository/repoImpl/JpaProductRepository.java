@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MemoryProductRepository implements ProductRepository {
+public class JpaProductRepository implements ProductRepository {
 
     private final Map<String, Product> productStore = new HashMap<>();
 

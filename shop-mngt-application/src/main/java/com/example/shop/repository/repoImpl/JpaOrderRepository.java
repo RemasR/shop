@@ -2,7 +2,6 @@ package com.example.shop.repository;
 
 import com.example.shop.domain.entity.Order;
 import com.example.shop.domain.entity.OrderStatus;
-import com.example.shop.domain.entity.User;
 import com.example.shop.domain.repository.OrderRepository;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MemoryOrderRepository implements OrderRepository {
+public class JpaOrderRepository implements OrderRepository {
 
     private final Map<String, Order> orderStore = new HashMap<>();
 
