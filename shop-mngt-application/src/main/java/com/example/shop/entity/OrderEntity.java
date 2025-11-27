@@ -1,5 +1,6 @@
-package com.example.shop.domain.entity;
+package com.example.shop.entity;
 
+import com.example.shop.domain.model.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class OrderEntity {
 
     @Column(name = "user_id", nullable = false)
     private String userId;

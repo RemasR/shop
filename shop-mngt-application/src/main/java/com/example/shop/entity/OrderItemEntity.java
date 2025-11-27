@@ -1,4 +1,4 @@
-package com.example.shop.domain.entity;
+package com.example.shop.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem {
+public class OrderItemEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
