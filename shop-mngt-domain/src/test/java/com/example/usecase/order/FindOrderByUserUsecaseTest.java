@@ -1,7 +1,7 @@
 package com.example.usecase.order;
 
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
 import com.example.shop.domain.repository.OrderRepository;
 import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.ValidationExecutor;

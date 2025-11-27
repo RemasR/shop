@@ -1,6 +1,6 @@
 package com.example.shop.domain.repository;
 
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.User;
 
 import java.util.List;
 

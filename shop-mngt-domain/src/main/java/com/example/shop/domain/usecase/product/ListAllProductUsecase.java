@@ -1,6 +1,6 @@
 package com.example.shop.domain.usecase.product;
 
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.repository.ProductRepository;
 
 import java.util.List;

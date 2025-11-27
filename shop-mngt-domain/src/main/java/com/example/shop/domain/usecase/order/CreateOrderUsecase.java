@@ -2,10 +2,9 @@ package com.example.shop.domain.usecase.order;
 
 import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.OrderItemDTO;
-import com.example.shop.domain.entity.*;
+import com.example.shop.domain.model.*;
 import com.example.shop.domain.repository.OrderRepository;
 import com.example.shop.domain.repository.ProductRepository;
-import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.example.shop.domain.validators.user;
 
 import com.example.shop.domain.dto.SimpleViolation;
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.validators.Validator;
 

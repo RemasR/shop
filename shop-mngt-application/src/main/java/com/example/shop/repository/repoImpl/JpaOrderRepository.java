@@ -1,50 +1,61 @@
 package com.example.shop.repository.repoImpl;
 
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
 import com.example.shop.domain.repository.OrderRepository;
+import com.example.shop.entity.OrderEntity;
+import com.example.shop.mapper.OrderMapper;
 import com.example.shop.repository.jpa.SpringDataOrderRepository;
-import com.example.shop.repository.jpa.SpringDataProductRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @Primary
 public class JpaOrderRepository implements OrderRepository {
-    private SpringDataOrderRepository springDataRepository;
 
-    public JpaOrderRepository(SpringDataOrderRepository springDataRepository) {
+    private final SpringDataOrderRepository springDataRepository;
+    private final OrderMapper orderMapper;
+
+    public JpaOrderRepository(SpringDataOrderRepository springDataRepository, OrderMapper orderMapper) {
         this.springDataRepository = springDataRepository;
+        this.orderMapper = orderMapper;
     }
 
     @Override
     public Order save(Order order) {
-       return springDataRepository.save(order);
+        OrderEntity entity = orderMapper.toEntity(order);
+        OrderEntity saved = springDataRepository.save(entity);
+        return orderMapper.toModel(saved);
     }
 
     @Override
     public Order findById(String id) {
-        return springDataRepository.findById(id).orElse(null);
+        OrderEntity entity = springDataRepository.findById(id).orElse(null);
+        return orderMapper.toModel(entity);
     }
 
     @Override
     public List<Order> findAllOrders() {
-        return springDataRepository.findAll();
+        return springDataRepository.findAll().stream()
+                .map(orderMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findByUserId(String userId) {
-        return springDataRepository.findByUserId(userId);
+        return springDataRepository.findByUserId(userId).stream()
+                .map(orderMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findByStatus(OrderStatus status) {
-       return springDataRepository.findByStatus(status);
+        return springDataRepository.findByStatus(status).stream()
+                .map(orderMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.example.shop.controller;
 
 import com.example.shop.domain.dto.OrderDTO;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
 import com.example.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

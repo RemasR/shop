@@ -2,7 +2,7 @@ package com.example.usecase.user;
 
 import com.example.shop.domain.dto.SimpleViolation;
 import com.example.shop.domain.dto.UserDTO;
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.User;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.ValidationExecutor;

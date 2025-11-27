@@ -1,7 +1,7 @@
 package com.example.shop.controller;
 
 import com.example.shop.domain.dto.ProductDTO;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Product;
 import com.example.shop.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

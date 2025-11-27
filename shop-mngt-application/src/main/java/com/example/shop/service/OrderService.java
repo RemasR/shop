@@ -1,8 +1,8 @@
 package com.example.shop.service;
 
 import com.example.shop.domain.dto.OrderDTO;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
 import com.example.shop.domain.usecase.order.*;
 import lombok.RequiredArgsConstructor;
 

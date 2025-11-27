@@ -1,7 +1,7 @@
 package com.example.valiidator.productValidator;
 
 import com.example.shop.domain.dto.SimpleViolation;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.validators.product.ProductNameValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

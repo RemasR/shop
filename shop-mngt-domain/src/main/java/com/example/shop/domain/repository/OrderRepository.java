@@ -1,8 +1,7 @@
 package com.example.shop.domain.repository;
 
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
 
 import java.util.List;
 

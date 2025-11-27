@@ -2,9 +2,9 @@ package com.example.usecase.order;
 
 import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.OrderItemDTO;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderStatus;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderStatus;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.usecase.ValidationException;
 import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.repository.OrderRepository;

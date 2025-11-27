@@ -1,7 +1,7 @@
 package com.example.shop.service;
 
 import com.example.shop.domain.dto.UserDTO;
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.User;
 import com.example.shop.domain.usecase.user.*;
 import lombok.RequiredArgsConstructor;
 

@@ -2,10 +2,10 @@ package com.example.shop.controller;
 
 import com.example.shop.domain.dto.OrderDTO;
 import com.example.shop.domain.dto.OrderItemDTO;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderItem;
-import com.example.shop.domain.entity.OrderStatus;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderItem;
+import com.example.shop.domain.model.OrderStatus;
+import com.example.shop.domain.model.Product;
 import com.example.shop.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

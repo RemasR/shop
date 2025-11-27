@@ -1,10 +1,8 @@
 package com.example.shop.config;
 
-import com.example.shop.domain.dto.OrderDTO;
-import com.example.shop.domain.dto.ProductDTO;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.Product;
-import com.example.shop.domain.entity.User;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.Product;
+import com.example.shop.domain.model.User;
 import com.example.shop.domain.repository.OrderRepository;
 import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.repository.UserRepository;

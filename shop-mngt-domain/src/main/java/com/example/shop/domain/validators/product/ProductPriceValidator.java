@@ -1,7 +1,7 @@
 package com.example.shop.domain.validators.product;
 
 import com.example.shop.domain.dto.SimpleViolation;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.validators.Validator;
 
 import java.util.HashSet;

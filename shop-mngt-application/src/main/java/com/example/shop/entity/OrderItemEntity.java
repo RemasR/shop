@@ -1,5 +1,6 @@
 package com.example.shop.entity;
 
+import com.example.shop.domain.model.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

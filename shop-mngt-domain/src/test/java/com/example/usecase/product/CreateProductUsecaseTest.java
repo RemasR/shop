@@ -1,7 +1,7 @@
 package com.example.usecase.product;
 
 import com.example.shop.domain.dto.ProductDTO;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.usecase.ValidationExecutor;
 import com.example.shop.domain.usecase.ValidationException;

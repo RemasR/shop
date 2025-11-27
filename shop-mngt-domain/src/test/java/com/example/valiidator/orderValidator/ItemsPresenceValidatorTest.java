@@ -1,19 +1,15 @@
 package com.example.validator.orderValidator;
 
-import com.example.shop.domain.dto.OrderDTO;
-import com.example.shop.domain.dto.OrderItemDTO;
 import com.example.shop.domain.dto.SimpleViolation;
-import com.example.shop.domain.entity.Order;
-import com.example.shop.domain.entity.OrderItem;
-import com.example.shop.domain.entity.Product;
+import com.example.shop.domain.model.Order;
+import com.example.shop.domain.model.OrderItem;
+import com.example.shop.domain.model.Product;
 import com.example.shop.domain.repository.ProductRepository;
 import com.example.shop.domain.repository.UserRepository;
 import com.example.shop.domain.validators.order.ItemsPresenceValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
