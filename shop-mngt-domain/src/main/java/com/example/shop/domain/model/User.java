@@ -1,4 +1,4 @@
-package com.example.shop.domain.models;
+package com.example.shop.domain.model;
 public class User {
     private String id;
     private String name;
