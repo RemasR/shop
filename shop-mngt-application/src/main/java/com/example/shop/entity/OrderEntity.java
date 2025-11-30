@@ -1,6 +1,6 @@
 package com.example.shop.entity;
 
-import com.example.shop.domain.model.OrderItem;
+import com.example.shop.domain.model.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +26,7 @@ public class OrderEntity {
 
     @ElementCollection
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
-    private List<OrderItem> items;
+    private List<OrderItemEntity> items;
 
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
