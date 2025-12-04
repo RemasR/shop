@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItemEntity {
+public class ItemEntity {
     @Id
     private String id;
     @ManyToOne
@@ -21,4 +21,7 @@ public class OrderItemEntity {
 
     @Column(nullable = false)
     private int quantity;
+
+    //order item - item
+    //remove data from validation exception
 }

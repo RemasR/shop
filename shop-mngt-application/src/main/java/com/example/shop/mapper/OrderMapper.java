@@ -2,8 +2,8 @@ package com.example.shop.mapper;
 
 import com.example.shop.domain.model.Order;
 import com.example.shop.domain.model.OrderItem;
+import com.example.shop.entity.ItemEntity;
 import com.example.shop.entity.OrderEntity;
-import com.example.shop.entity.OrderItemEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -13,7 +13,7 @@ public interface OrderMapper {
 
     Order toModel(OrderEntity entity);
 
-    OrderItemEntity toEntity(OrderItem orderItem);
+    ItemEntity toEntity(OrderItem orderItem);
 
-    OrderItem toModel(OrderItemEntity entity);
+    OrderItem toModel(ItemEntity entity);
 }

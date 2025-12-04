@@ -26,7 +26,7 @@ public class OrderEntity {
 
     @ElementCollection
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
-    private List<OrderItemEntity> items;
+    private List<ItemEntity> items;
 
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
